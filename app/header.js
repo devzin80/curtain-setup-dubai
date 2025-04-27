@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 const Header = () => {
     return (
-        <div className='sticky w-full h-[12vh] bg-white text-black text-xl flex justify-center items-center'>
+        <div className='sticky top-0 w-full h-[12vh] bg-white text-black text-xl flex justify-center items-center shadow z-20'>
             <div className='w-3/4 flex justify-between items-center'>
                 {/* Logo Div here */}
 
@@ -15,6 +15,7 @@ const Header = () => {
                             src={Logo}
                             alt='Website Logo'
                             height={95}
+                            priority
                         />
                     </div>
                 </Link>
@@ -23,11 +24,11 @@ const Header = () => {
 
                 <div className='flex justify-between items-center text-xl text-black text-center gap-10 font-semibold'>
                     <Link href={'/products'}>Our Products</Link>
-                    <Link href={'/cost-estimator'}>Get Estimate</Link>
+                    <Link href={'/curtain-cost-estimator'}>Get Estimate</Link>
                     <Link href={'/about-us'}>About Us</Link>
                     <Link href={'/help'}>Help</Link>
-                    <Link href={'/free-visit'}>
-                        <div className='border-blue-600 rounded-xl border-2 px-4 py-2.5 text-blue-600'>
+                    <Link href={'/book-a-free-visit'}>
+                        <div className='border-blue-400 rounded-xl border-2 px-4 py-2.5 text-blue-400'>
                             Book A Free Visit
                         </div>
                     </Link>
