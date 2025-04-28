@@ -65,11 +65,11 @@ const Footer = () => {
                             <Link href={'/curtain-cost-estimator'}>
                                 Get Estimate
                             </Link>
-                            <Link href={'/about-us'}>About Us</Link>
+                            
                             <Link href={'/privacy-policy'}>Privacy Policy</Link>
                         </div>
                         <div className='flex flex-col font-semibold gap-2'>
-                            <Link href={'/help'}>Help</Link>
+                            
                             <Link href={'/book-a-free-visit'}>
                                 Book A Free Visit
                             </Link>
@@ -97,7 +97,7 @@ const Footer = () => {
                             </div>
                         </div>
                         <div>
-                            <p className='text-xl font-bold mt-2'>Contact Us</p>
+                            <p className='text-xl font-bold mt-5'>Contact Us</p>
                             <div className='flex gap-2 mt-5 mb-8'>
                                 <Image
                                     src={'map.svg'}

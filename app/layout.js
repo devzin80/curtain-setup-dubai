@@ -1,18 +1,7 @@
-import { Roboto, Inter, Montserrat } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
-import Header from './header'
-import Footer from './footer'
+import LayoutWrapper from './(Components)/layoutWrapper'
 
-const roboto = Roboto({
-    subsets: ['latin'],
-    variable: '--font-roboto',
-    display: 'swap',
-})
-const inter = Inter({
-    subsets: ['latin'],
-    variable: '--font-inter',
-    display: 'swap',
-})
 const montserrat = Montserrat({
     subsets: ['latin'],
     variable: '--font-montserrat',
@@ -28,12 +17,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang='en'>
-            <body
-                className={`${montserrat.variable} font-montserrat antialiased`}
-            >
-                <Header />
-                {children}
-                <Footer />
+            <body className={`${montserrat.className} antialiased`}>
+                <LayoutWrapper>{children}</LayoutWrapper>
             </body>
         </html>
     )
