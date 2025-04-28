@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '500mb', // Change this to your desired file upload size limit
+        },
+    },
+}
 
-export default nextConfig;
+export default nextConfig

@@ -1,8 +1,9 @@
+import Uploader from '@/app/(Components)/uploader'
 import React from 'react'
 
 const HeroBannerVideo = () => {
   return (
-    <div>video upload section here</div>
+    <div></div>
   )
 }
 

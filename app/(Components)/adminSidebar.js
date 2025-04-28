@@ -108,7 +108,7 @@ const SidebarItem = ({ item, level = 0 }) => {
 
 const AdminSidebar = () => {
     return (
-        <div className='w-1/4 bg-gray-50 text-black border-r-2 border-amber-600 h-screen overflow-y-auto p-4'>
+        <div className='w-1/4 bg-gray-50 text-black border-r-2 border-amber-600  p-4'>
             {sidebar.map((item, index) => (
                 <SidebarItem
                     key={index}
