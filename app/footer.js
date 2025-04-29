@@ -3,7 +3,13 @@ import React from 'react'
 import Banner from '../public/urbar-logo.svg'
 import Link from 'next/link'
 
+
+
 const Footer = () => {
+    // await connectDB()
+    // const address = await Contact.find()
+    // console.log(address);
+    
     return (
         <div className='w-full text-black text-xl flex flex-col justify-center items-center shadow-[0_-3px_5px_-2px_rgba(0,0,0,0.1)] '>
             <div className='flex justify-center items-center pt-4'>
@@ -65,11 +71,10 @@ const Footer = () => {
                             <Link href={'/curtain-cost-estimator'}>
                                 Get Estimate
                             </Link>
-                            
+
                             <Link href={'/privacy-policy'}>Privacy Policy</Link>
                         </div>
                         <div className='flex flex-col font-semibold gap-2'>
-                            
                             <Link href={'/book-a-free-visit'}>
                                 Book A Free Visit
                             </Link>
@@ -106,7 +111,7 @@ const Footer = () => {
                                     height={24}
                                 />
                                 <p className='text-xl font-semibold text-black'>
-                                    International city,Dubai,UAE
+                                    {/* {address} */} address
                                 </p>
                             </div>
                             <div className='flex gap-2 my-5'>
