@@ -21,12 +21,20 @@ const sidebar = [
                 link: '/sordar/our-recent-works',
             },
             {
+                name: 'our-products',
+                link: '/sordar/our-products',
+            },
+            {
                 name: 'best-selling-products',
                 link: '/sordar/best-selling-products',
             },
             {
                 name: 'additional-products',
                 link: '/sordar/additional-products',
+            },
+            {
+                name: 'price-calculator',
+                link: '/sordar/price-calculator',
             },
             {
                 name: 'reviews',
@@ -69,7 +77,7 @@ const sidebar = [
     },
     {
         name: 'SEO',
-        link: '/sordar/seo', // added link to SEO
+        // added link to SEO
     },
 ]
 
@@ -108,7 +116,7 @@ const SidebarItem = ({ item, level = 0 }) => {
 
 const AdminSidebar = () => {
     return (
-        <div className='w-1/4 bg-gray-50 text-black border-r-2 border-amber-600  p-4'>
+        <div className='w-1/4 bg-gray-50 text-black border-r-2 border-amber-600  p-4 '>
             {sidebar.map((item, index) => (
                 <SidebarItem
                     key={index}

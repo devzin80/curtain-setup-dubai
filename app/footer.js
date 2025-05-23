@@ -1,15 +1,24 @@
 import Image from 'next/image'
 import React from 'react'
-import Banner from '../public/urbar-logo.svg'
 import Link from 'next/link'
+import {
+    footerLogo,
+    getAddress,
+    getEmail,
+    getNumber,
+    getSocialMedia,
+} from '@/lib/actions/dataFetch'
+import Media from './(Components)/media'
 
-
-
-const Footer = () => {
-    // await connectDB()
-    // const address = await Contact.find()
-    // console.log(address);
+const Footer = async () => {
+    const logo = await footerLogo()
+    const socialMedias = await getSocialMedia()
+    const address = await getAddress()
+    const phoneNumber = await getNumber()
+    const email = await getEmail()
+   
     
+
     return (
         <div className='w-full text-black text-xl flex flex-col justify-center items-center shadow-[0_-3px_5px_-2px_rgba(0,0,0,0.1)] '>
             <div className='flex justify-center items-center pt-4'>
@@ -17,48 +26,23 @@ const Footer = () => {
                     {/* Brand here */}
                     <div className='mr-30'>
                         <Image
-                            src={Banner}
-                            alt='Urban Interior Brand Logo'
-                            height={200}
+                            src={logo.url}
+                            alt={logo.name}
+                            width={350}
+                            height={350}
+                            priority
                         />
                         <div className='ml-10'>
                             <p className='text-2xl text-black-700 font-bold text-nowrap'>
                                 Follow us on
                             </p>
                             <div className='text-black flex gap-1 mt-2'>
-                                <Link
-                                    href={'https://facebook.com'}
-                                    target='_blank'
-                                >
-                                    <Image
-                                        src={'facebook.svg'}
-                                        alt={'facebook page link'}
-                                        width={48}
-                                        height={48}
+                                {socialMedias?.map((media) => (
+                                    <Media
+                                        key={media._id}
+                                        media={media}
                                     />
-                                </Link>
-                                <Link
-                                    href={'/'}
-                                    target='_blank'
-                                >
-                                    <Image
-                                        src={'instagram.svg'}
-                                        alt={'Instagram page link'}
-                                        width={48}
-                                        height={48}
-                                    />
-                                </Link>
-                                <Link
-                                    href={'/'}
-                                    target='_blank'
-                                >
-                                    <Image
-                                        src={'whatsapp.svg'}
-                                        alt={'whatsapp link'}
-                                        width={48}
-                                        height={48}
-                                    />
-                                </Link>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -91,10 +75,11 @@ const Footer = () => {
                             <p className='text-xl font-bold mt-4'>We are in</p>
                             <div className='flex gap-2 mt-5'>
                                 <Image
-                                    src={'map.svg'}
+                                    src={'/map.svg'}
                                     alt={'location Icon'}
                                     width={24}
                                     height={24}
+                                    priority
                                 />
                                 <p className='text-xl font-semibold text-black'>
                                     Dubai
@@ -105,35 +90,38 @@ const Footer = () => {
                             <p className='text-xl font-bold mt-5'>Contact Us</p>
                             <div className='flex gap-2 mt-5 mb-8'>
                                 <Image
-                                    src={'map.svg'}
+                                    src={'/map.svg'}
                                     alt={'location Icon'}
                                     width={24}
                                     height={24}
+                                    priority
                                 />
                                 <p className='text-xl font-semibold text-black'>
-                                    {/* {address} */} address
+                                    {address.address}
                                 </p>
                             </div>
                             <div className='flex gap-2 my-5'>
                                 <Image
-                                    src={'call.svg'}
+                                    src={'/call.svg'}
                                     alt={'Call Icon'}
                                     width={24}
                                     height={24}
+                                    priority
                                 />
                                 <p className='text-xl font-semibold text-black'>
-                                    0544985661
+                                    {phoneNumber.phoneNumber}
                                 </p>
                             </div>
                             <div className='flex gap-2 my-5'>
                                 <Image
-                                    src={'whatsapp.svg'}
+                                    src={'/whatsapp.svg'}
                                     alt={'Whatsapp Icon'}
                                     width={24}
                                     height={24}
+                                    priority
                                 />
                                 <p className='text-xl font-semibold text-black'>
-                                    0544985661
+                                    {phoneNumber.phoneNumber}
                                 </p>
                             </div>
                             <div className='flex gap-2 my-5'>
@@ -142,9 +130,10 @@ const Footer = () => {
                                     alt={'Email Icon'}
                                     width={24}
                                     height={24}
+                                    priority
                                 />
                                 <p className='text-xl text-wrap font-semibold text-black'>
-                                    urbaninteriorsdubaioffical@gmail.com
+                                    {email.email}
                                 </p>
                             </div>
                         </div>

@@ -1,9 +1,10 @@
 import React from 'react'
+import Calculator from '../(Components)/calculator'
 
-const Calculator = () => {
+const CurtainCostEstimator = () => {
   return (
-    <div>Calculator</div>
+    <Calculator />
   )
 }
 
-export default Calculator
+export default CurtainCostEstimator
