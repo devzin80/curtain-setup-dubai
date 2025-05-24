@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export async function GET(req, { params }) {
     await connectDB()
 
-    const { slug } = params
+    const { slug } = await params
     console.log(slug);
     
 
@@ -13,3 +13,6 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(product)
 }
+
+// app/(backend)/api/best-selling-products/[slug]/route.js
+

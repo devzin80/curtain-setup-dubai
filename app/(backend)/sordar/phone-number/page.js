@@ -19,8 +19,8 @@ const PhoneNumber = () => {
                 const data = await response.json()
 
                 if (data.length > 0) {
-                    setPhoneNumber(data[0].phoneNumber || '')
-                    setPhoneNumberId(data[0]._id || '')
+                    setPhoneNumber(data[0].phoneNumber )
+                    setPhoneNumberId(data[0]._id)
                 }
             } catch (error) {
                 console.error('Error fetching phone number:', error)
