@@ -16,7 +16,9 @@ const OurRecentWorks = () => {
     }, [])
 
     const fetchRecentWorks = async () => {
-        const res = await fetch('/api/recent-works')
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works`,
+        )
         const data = await res.json()
         setRecentWorks(data)
     }
@@ -62,15 +64,18 @@ const OurRecentWorks = () => {
     const handleDragOver = (e) => e.preventDefault()
 
     const removeImage = () => setForm((prev) => ({ ...prev, image: null }))
-
+    // ${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch('/api/recent-works', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works`,
+            {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            },
+        )
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
@@ -89,9 +94,12 @@ const OurRecentWorks = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this ?')) return
 
-        const res = await fetch(`/api/recent-works?id=${id}`, {
-            method: 'DELETE',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works?id=${id}`,
+            {
+                method: 'DELETE',
+            },
+        )
 
         if (res.ok) {
             showToast('Deleted!')

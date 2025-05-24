@@ -17,8 +17,12 @@ const SocialLinks = () => {
         fetchSocials()
     }, [])
 
+
+    // `${process.env.NEXT_PUBLIC_BASE_URL}/api/privacy-policy`
     const fetchSocials = async () => {
-        const res = await fetch('/api/social-medias')
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/social-medias`,
+        )
         const data = await res.json()
         setSocials(data)
     }
@@ -68,11 +72,14 @@ const SocialLinks = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch('/api/social-medias', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/social-medias`,
+            {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            },
+        )
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
@@ -91,9 +98,12 @@ const SocialLinks = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this media?')) return
 
-        const res = await fetch(`/api/social-medias?id=${id}`, {
-            method: 'DELETE',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/social-medias?id=${id}`,
+            {
+                method: 'DELETE',
+            },
+        )
 
         if (res.ok) {
             showToast('Deleted!')

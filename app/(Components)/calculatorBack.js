@@ -496,11 +496,15 @@ export default function CalculatorPage() {
     })
 
     
+// `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`
+
     useEffect(() => {
         fetchCalculators()
     }, [])
     const fetchCalculators = async () => {
-        const res = await fetch('/api/calculator')
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+        )
         const data = await res.json()
         setCalculators(data)
     }
@@ -554,22 +558,25 @@ const handleSubmit = async (e) => {
     
     const method = form._id ? 'PATCH' : 'POST'
 
-    const res = await fetch('/api/calculator', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-            form._id
-                ? {
-                      id: form._id, // fix here
-                      name: form.name,
-                      hasVariants: form.hasVariants,
-                      price: form.price,
-                      factor: form.factor,
-                      variants: form.variants,
-                  }
-                : form,
-        ),
-    })
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+        {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                form._id
+                    ? {
+                          id: form._id, // fix here
+                          name: form.name,
+                          hasVariants: form.hasVariants,
+                          price: form.price,
+                          factor: form.factor,
+                          variants: form.variants,
+                      }
+                    : form,
+            ),
+        },
+    )
 
     if (res.ok) {
         showToast(form._id ? 'Calculator updated!' : 'Calculator added!')
@@ -591,13 +598,16 @@ const handleSubmit = async (e) => {
 const handleDelete = async (id) => {
     if (!confirm('Are you sure?')) return
 
-    const res = await fetch('/api/calculator', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+        {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id }),
         },
-        body: JSON.stringify({ id }),
-    })
+    )
 
     const data = await res.json()
 

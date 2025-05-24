@@ -9,7 +9,9 @@ const EmailAddress = () => {
       useEffect(() => {
           const fetchData = async () => {
               try {
-                  const response = await fetch('/api/email')
+                  const response = await fetch(
+                      `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`,
+                  )
                   if (!response.ok) throw new Error('Failed to fetch policy')
                   const data = await response.json()
 
@@ -28,19 +30,21 @@ const EmailAddress = () => {
        const handleSubmit = async (e) => {
            e.preventDefault()
 
-           const res = await fetch('/api/email')
+           const res = await fetch(
+               `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`,
+           )
            const data = await res.json()
 
            if (data.length === 0) {
                // No content in DB – Create new
-               await fetch('/api/email', {
+               await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email`, {
                    method: 'POST',
                    headers: { 'Content-Type': 'application/json' },
                    body: JSON.stringify({ email }),
                })
            } else {
                // Content exists – Update existing
-               await fetch('/api/email', {
+               await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email`, {
                    method: 'PUT',
                    headers: { 'Content-Type': 'application/json' },
                    body: JSON.stringify({ id: data[0]._id, email }),

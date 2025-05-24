@@ -8,7 +8,9 @@ const TermsAndConditions = () => {
   useEffect(() => {
       const fetchData = async () => {
           try {
-              const response = await fetch('/api/terms-and-conditions')
+              const response = await fetch(
+                  `${process.env.NEXT_PUBLIC_BASE_URL}/api/terms-and-conditions`,
+              )
               if (!response.ok) throw new Error('Failed to fetch policy')
               const data = await response.json()
   
@@ -27,23 +29,31 @@ const TermsAndConditions = () => {
   const handleSubmit = async (e) => {
       e.preventDefault()
   
-      const res = await fetch('/api/terms-and-conditions')
+      const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/terms-and-conditions`,
+      )
       const data = await res.json()
   
       if (data.length === 0) {
           // No content in DB – Create new
-          await fetch('/api/terms-and-conditions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ content }),
-          })
+          await fetch(
+             ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/terms-and-conditions`,
+              {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ content }),
+              },
+          )
       } else {
           // Content exists – Update existing
-          await fetch('/api/terms-and-conditions', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ id: data[0]._id, content }),
-          })
+          await fetch(
+             ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/terms-and-conditions`,
+              {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id: data[0]._id, content }),
+              },
+          )
       }
       alert('Post saved!')
   }

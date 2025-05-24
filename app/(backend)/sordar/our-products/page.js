@@ -17,7 +17,9 @@ const OurProducts = () => {
     }, [])
 
     const fetchProducts = async () => {
-        const res = await fetch('/api/our-products')
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`,
+        )
         const data = await res.json()
         setProducts(data)
     }
@@ -67,11 +69,14 @@ const OurProducts = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch('/api/our-products', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`,
+            {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            },
+        )
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
@@ -90,9 +95,12 @@ const OurProducts = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this product?')) return
 
-        const res = await fetch(`/api/our-products?id=${id}`, {
-            method: 'DELETE',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products?id=${id}`,
+            {
+                method: 'DELETE',
+            },
+        )
 
         if (res.ok) {
             showToast('Deleted!')

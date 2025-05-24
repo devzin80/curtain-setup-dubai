@@ -18,7 +18,9 @@ const WhyWeAreTrusted = () => {
     }, [])
 
     const fetchContents = async () => {
-        const res = await fetch('/api/why-we-are-trusted')
+        const res = await fetch(
+           ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted`,
+        )
         const data = await res.json()
         setContents(data)
     }
@@ -68,11 +70,14 @@ const WhyWeAreTrusted = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch('/api/why-we-are-trusted', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        })
+        const res = await fetch(
+           ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted`,
+            {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            },
+        )
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
@@ -97,9 +102,12 @@ const WhyWeAreTrusted = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this content?')) return
 
-        const res = await fetch(`/api/why-we-are-trusted?id=${id}`, {
-            method: 'DELETE',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted?id=${id}`,
+            {
+                method: 'DELETE',
+            },
+        )
 
         if (res.ok) {
             showToast('Deleted!')
