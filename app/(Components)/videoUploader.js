@@ -16,7 +16,7 @@ export default function Uploader({ apiPath }) {
             try {
                 const res = await fetch(apiPath)
                 const data = await res.json()
-
+    
                 if (data?.length > 0) {
                     const video = data[0]
                     setUploadId(video._id)

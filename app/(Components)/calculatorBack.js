@@ -495,15 +495,15 @@ export default function CalculatorPage() {
         variants: [],
     })
 
+    
+    useEffect(() => {
+        fetchCalculators()
+    }, [])
     const fetchCalculators = async () => {
         const res = await fetch('/api/calculator')
         const data = await res.json()
         setCalculators(data)
     }
-
-    useEffect(() => {
-        fetchCalculators()
-    }, [])
 
     // const handleSubmit = async (e) => {
     //     e.preventDefault()

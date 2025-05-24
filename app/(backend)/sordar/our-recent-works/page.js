@@ -16,7 +16,7 @@ const OurRecentWorks = () => {
     }, [])
 
     const fetchRecentWorks = async () => {
-        const res = await fetch('')
+        const res = await fetch('/api/recent-works')
         const data = await res.json()
         setRecentWorks(data)
     }
@@ -66,7 +66,7 @@ const OurRecentWorks = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch('/api/recentWorks', {
+        const res = await fetch('/api/recent-works', {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(form),
@@ -74,28 +74,28 @@ const OurRecentWorks = () => {
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
-            setForm({ _id: null, title: '', description: '', image: null })
-            fetchProducts()
+            setForm({ _id: null, location: '',  image: null })
+            fetchRecentWorks()
         } else {
             showToast('Failed to save', 'error')
         }
     }
 
-    const handleEdit = (product) => {
-        setForm(product)
+    const handleEdit = (RecentWork) => {
+        setForm(RecentWork)
         showToast('Edit mode enabled')
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this product?')) return
+        if (!confirm('Are you sure you want to delete this ?')) return
 
-        const res = await fetch(`/api/recentWorks?id=${id}`, {
+        const res = await fetch(`/api/recent-works?id=${id}`, {
             method: 'DELETE',
         })
 
         if (res.ok) {
             showToast('Deleted!')
-            fetchProducts()
+            fetchRecentWorks()
         } else {
             showToast('Failed to delete', 'error')
         }

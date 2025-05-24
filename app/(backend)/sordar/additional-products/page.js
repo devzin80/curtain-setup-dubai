@@ -16,18 +16,17 @@ const AdditionalProducts = () => {
     const [selectedFiles, setSelectedFiles] = useState([])
     const inputRef = useRef(null)
 
+    useEffect(() => {
+        fetchProducts()
+    }, [])
     const fetchProducts = async () => {
-      const category = 'others'
+        const category = 'others'
         const res = await fetch(
             `/api/best-selling-products?category=${category}`,
         )
         const data = await res.json()
         setProducts(data)
     }
-
-    useEffect(() => {
-        fetchProducts()
-    }, [])
 
     const showToast = (msg, type = 'success') => {
         const toast = document.createElement('div')
@@ -195,8 +194,6 @@ const AdditionalProducts = () => {
                         <option value='others'>Others</option>
                     </select>
                 </div>
-
-
 
                 <div>
                     <label className='block font-medium mb-1'>
