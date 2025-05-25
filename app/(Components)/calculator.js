@@ -1,150 +1,124 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-const Calculator = () => {
-    const [calculators, setCalculators] = useState([])
-    const [selectedCalculator, setSelectedCalculator] = useState(null)
-    const [selectedVariant, setSelectedVariant] = useState(null)
-    const [width, setWidth] = useState(1) // meters
-    const [height, setHeight] = useState(1) // meters
+const CurtainCalculator = () => {
+    const [curtainType, setCurtainType] = useState('Sheers only')
+    const [style, setStyle] = useState('American')
+    const [width, setWidth] = useState(100)
+    const [height, setHeight] = useState(100)
+    const [motorized, setMotorized] = useState(false)
 
-    useEffect(() => {
-        fetchCalculators()
-    }, [])
+    // Pricing logic based on selected options
+    const calculateTotalAmount = () => {
+        let basePrice = 50 // Default base price
+        let styleMultiplier = style === 'American' ? 2 : 3
+        let motorizedPrice = motorized ? 200 : 0
 
-    const fetchCalculators = async () => {
-        const res = await fetch('/api/calculator')
-        const data = await res.json()
-        setCalculators(data)
-        if (data.length > 0) setSelectedCalculator(data[0])
+        // Example calculation logic based on area
+        let totalAmount =
+            basePrice + width * height * 0.1 * styleMultiplier + motorizedPrice
+        return totalAmount.toFixed(2)
     }
-
-    // Calculate area in m²
-    const windowArea = width * height
-
-    // Get factor and price from selected calculator or variant
-    let factor = 1
-    let pricePerSqm = 0
-
-    if (selectedCalculator) {
-        if (selectedCalculator.hasVariants && selectedVariant) {
-            factor = selectedVariant.factor
-            pricePerSqm = selectedVariant.price
-        } else if (!selectedCalculator.hasVariants) {
-            factor = selectedCalculator.factor
-            pricePerSqm = selectedCalculator.price
-        }
-    }
-
-    const effectiveArea = windowArea * factor
-    const totalPrice = effectiveArea * pricePerSqm
 
     return (
-        <div className='max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg my-6'>
-            <h1 className='text-center text-3xl font-bold mb-6'>
-                Online Price Estimator
-            </h1>
+        <div className='max-w-lg mx-auto my-8 p-6 bg-white shadow-lg rounded-xl'>
+            <h2 className='text-2xl font-bold text-center text-blue-600 mb-6'>
+                Curtain Price Calculator
+            </h2>
 
-            {/* Calculator Type */}
-            <section className='mb-6'>
-                <h2 className='text-xl font-semibold mb-2'>
-                    Select Product/Calculator
-                </h2>
+            {/* Curtain Type Selection */}
+            <div className='mb-4'>
+                <label className='block text-lg font-semibold'>
+                    Select Curtain Type
+                </label>
                 <select
-                    className='w-full border p-2 rounded'
-                    value={selectedCalculator?._id || ''}
-                    onChange={(e) => {
-                        const calc = calculators.find(
-                            (c) => c._id === e.target.value,
-                        )
-                        setSelectedCalculator(calc)
-                        setSelectedVariant(null)
-                    }}
+                    value={curtainType}
+                    onChange={(e) => setCurtainType(e.target.value)}
+                    className='w-full p-3 mt-2 border rounded-lg'
                 >
-                    {calculators.map((calc) => (
-                        <option
-                            key={calc._id}
-                            value={calc._id}
-                        >
-                            {calc.name}
-                        </option>
-                    ))}
+                    <option>Sheers only</option>
+                    <option>Blackout only</option>
+                    <option>Sheers + Blackout</option>
+                    <option>Roman blinds</option>
+                    <option>Roller blinds</option>
                 </select>
-            </section>
+            </div>
 
-            {/* Variant Selection */}
-            {selectedCalculator?.hasVariants && (
-                <section className='mb-6'>
-                    <h2 className='text-xl font-semibold mb-2'>
-                        Select Variant
-                    </h2>
-                    <select
-                        className='w-full border p-2 rounded'
-                        value={selectedVariant?._id || ''}
-                        onChange={(e) => {
-                            const variant = selectedCalculator.variants.find(
-                                (v) => v._id === e.target.value,
-                            )
-                            setSelectedVariant(variant)
-                        }}
-                    >
-                        <option value=''>Select a variant</option>
-                        {selectedCalculator.variants.map((variant) => (
-                            <option
-                                key={variant._id}
-                                value={variant._id}
-                            >
-                                {variant.name} (Price: {variant.price} AED,
-                                Factor: {variant.factor})
-                            </option>
-                        ))}
-                    </select>
-                </section>
-            )}
+            {/* Style Selection */}
+            <div className='mb-4'>
+                <label className='block text-lg font-semibold'>
+                    Choose Style
+                </label>
+                <select
+                    value={style}
+                    onChange={(e) => setStyle(e.target.value)}
+                    className='w-full p-3 mt-2 border rounded-lg'
+                >
+                    <option>American (x2 window width)</option>
+                    <option>Wavy (x3 window width)</option>
+                </select>
+            </div>
 
-            {/* Width Input */}
-            <section className='mb-6'>
-                <h2 className='text-xl font-semibold mb-2'>Width (meters):</h2>
+            {/* Width & Height Sliders */}
+            <div className='grid grid-cols-2 gap-4 mb-6'>
+                <div>
+                    <label className='block text-lg font-semibold'>
+                        Width (cm)
+                    </label>
+                    <input
+                        type='range'
+                        min='100'
+                        max='1000'
+                        value={width}
+                        onChange={(e) => setWidth(Number(e.target.value))}
+                        className='w-full mt-2'
+                    />
+                    <span className='text-sm block text-center'>
+                        {width} cm
+                    </span>
+                </div>
+                <div>
+                    <label className='block text-lg font-semibold'>
+                        Height (cm)
+                    </label>
+                    <input
+                        type='range'
+                        min='100'
+                        max='1000'
+                        value={height}
+                        onChange={(e) => setHeight(Number(e.target.value))}
+                        className='w-full mt-2'
+                    />
+                    <span className='text-sm block text-center'>
+                        {height} cm
+                    </span>
+                </div>
+            </div>
+
+            {/* Motorized Option */}
+            <div className='flex items-center justify-between mb-6'>
+                <label className='text-lg font-semibold'>
+                    Add Motorized Option?
+                </label>
                 <input
-                    type='number'
-                    min='0.1'
-                    step='0.01'
-                    value={width}
-                    onChange={(e) => setWidth(Number(e.target.value))}
-                    className='w-full border p-2 rounded'
+                    type='checkbox'
+                    checked={motorized}
+                    onChange={(e) => setMotorized(e.target.checked)}
+                    className='h-5 w-5'
                 />
-            </section>
+            </div>
 
-            {/* Height Input */}
-            <section className='mb-6'>
-                <h2 className='text-xl font-semibold mb-2'>Height (meters):</h2>
-                <input
-                    type='number'
-                    min='0.1'
-                    step='0.01'
-                    value={height}
-                    onChange={(e) => setHeight(Number(e.target.value))}
-                    className='w-full border p-2 rounded'
-                />
-            </section>
-
-            <hr className='my-6' />
-
-            {/* Results */}
-            <section className='text-center'>
-                <h2 className='text-2xl font-bold mb-2'>
-                    Total amount:{' '}
-                    {isNaN(totalPrice) ? '—' : totalPrice.toFixed(2)} AED
-                </h2>
-                <h3 className='text-lg'>
-                    Curtains Square:{' '}
-                    {isNaN(effectiveArea) ? '—' : effectiveArea.toFixed(2)} m²
+            {/* Total Price Display */}
+            <div className='text-center'>
+                <h3 className='text-xl font-bold text-blue-700'>
+                    Total Amount
                 </h3>
-            </section>
+                <p className='text-2xl font-semibold text-blue-900'>
+                    {calculateTotalAmount()} AED
+                </p>
+            </div>
         </div>
     )
 }
 
-export default Calculator
-
-// Available options for curtain types.
+export default CurtainCalculator
