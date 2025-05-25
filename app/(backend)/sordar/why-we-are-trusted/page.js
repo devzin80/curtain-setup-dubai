@@ -12,18 +12,17 @@ const WhyWeAreTrusted = () => {
         button: '',
     })
     const inputRef = useRef(null)
-
-    useEffect(() => {
-        fetchContents()
-    }, [])
-
     const fetchContents = async () => {
         const res = await fetch(
-           ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted`,
+            ` /api/why-we-are-trusted`,
         )
         const data = await res.json()
         setContents(data)
     }
+
+    useEffect(() => {
+        fetchContents()
+    }, [])
 
     const showToast = (msg, type = 'success') => {
         const toast = document.createElement('div')
@@ -71,7 +70,7 @@ const WhyWeAreTrusted = () => {
         const method = form._id ? 'PATCH' : 'POST'
 
         const res = await fetch(
-           ` ${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted`,
+            ` /api/why-we-are-trusted`,
             {
                 method,
                 headers: { 'Content-Type': 'application/json' },
@@ -103,7 +102,7 @@ const WhyWeAreTrusted = () => {
         if (!confirm('Are you sure you want to delete this content?')) return
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/why-we-are-trusted?id=${id}`,
+            `/api/why-we-are-trusted?id=${id}`,
             {
                 method: 'DELETE',
             },
@@ -147,7 +146,9 @@ const WhyWeAreTrusted = () => {
                 </div>
 
                 <div>
-                    <label className='block font-medium'>Add Button To Content</label>
+                    <label className='block font-medium'>
+                        Add Button To Content
+                    </label>
                     <select
                         name='button'
                         className='w-full border p-2 rounded'
@@ -221,7 +222,7 @@ const WhyWeAreTrusted = () => {
                     Our contents
                 </h2>
                 <div className='grid grid-cols-2 md:grid-cols-2 gap-6'>
-                    {contents.map((content) => (
+                    {contents?.map((content) => (
                         <div
                             key={content._id}
                             className='bg-white shadow p-4 rounded space-y-2'

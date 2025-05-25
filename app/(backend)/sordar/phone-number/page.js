@@ -41,11 +41,7 @@ const PhoneNumber = () => {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`,
             )
 
-            if (!res.ok) {
-                const errorText = await res.text()
-                console.error('Error fetching data:', errorText)
-                throw new Error(`Fetch failed: ${res.status}`)
-            }
+            
 
             const data = await res.json()
 

@@ -10,9 +10,9 @@ const EmailAddress = () => {
           const fetchData = async () => {
               try {
                   const response = await fetch(
-                      `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`,
+                      `/api/email`,
                   )
-                  if (!response.ok) throw new Error('Failed to fetch policy')
+                  
                   const data = await response.json()
 
                   if (data.length > 0) {
@@ -31,20 +31,20 @@ const EmailAddress = () => {
            e.preventDefault()
 
            const res = await fetch(
-               `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`,
+               `/api/email`,
            )
            const data = await res.json()
 
            if (data.length === 0) {
                // No content in DB – Create new
-               await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email`, {
+               await fetch(`/api/email`, {
                    method: 'POST',
                    headers: { 'Content-Type': 'application/json' },
                    body: JSON.stringify({ email }),
                })
            } else {
                // Content exists – Update existing
-               await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email`, {
+               await fetch(`/api/email`, {
                    method: 'PUT',
                    headers: { 'Content-Type': 'application/json' },
                    body: JSON.stringify({ id: data[0]._id, email }),

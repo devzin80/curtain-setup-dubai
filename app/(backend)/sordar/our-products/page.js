@@ -18,7 +18,7 @@ const OurProducts = () => {
 
     const fetchProducts = async () => {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`, 
+            `/api/our-products`, 
         )
         const data = await res.json()
         console.log(data);
@@ -72,7 +72,7 @@ const OurProducts = () => {
         const method = form._id ? 'PATCH' : 'POST'
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`,
+            `/api/our-products`,
             {
                 method,
                 headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,7 @@ const OurProducts = () => {
         if (!confirm('Are you sure you want to delete this product?')) return
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products?id=${id}`,
+            `/api/our-products?id=${id}`,
             {
                 method: 'DELETE',
             },
