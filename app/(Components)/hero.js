@@ -15,7 +15,7 @@ const Hero = async() => {
                 playsInline
             >
                 <source
-                    src={video.url}
+                    src={video.url || ''}
                     type='video/mp4'
                 />
                 Your browser does not support the video tag.

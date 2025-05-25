@@ -17,13 +17,26 @@ const BestSellingProducts = () => {
     const inputRef = useRef(null)
 
     const fetchProducts = async () => {
-        const category = 'curtains'
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products?category=${category}`,
-        )
-        const data = await res.json()
-        setProducts(data)
+        try {
+            const category = 'curtains'
+
+            // Use relative URL for client-side fetch (safe in all environments)
+            const res = await fetch(
+                `/api/best-selling-products?category=${category}`,
+            )
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`)
+            }
+
+            const data = await res.json()
+            setProducts(data)
+        } catch (error) {
+            console.error('Error fetching products:', error)
+            setProducts([]) // Optional: fallback to empty list
+        }
     }
+      
 
     useEffect(() => {
         fetchProducts()

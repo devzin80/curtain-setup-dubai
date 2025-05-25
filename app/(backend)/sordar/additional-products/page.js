@@ -19,14 +19,25 @@ const AdditionalProducts = () => {
     useEffect(() => {
         fetchProducts()
     }, [])
-    const fetchProducts = async () => {
-        const category = 'others'
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products?category=${category}`,
-        )
-        const data = await res.json()
-        setProducts(data)
-    }
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch(
+                    '/api/best-selling-products?category=others',
+                )
+                if (!res.ok) {
+                    throw new Error('Failed to fetch')
+                }
+                const data = await res.json()
+                setProducts(data)
+            } catch (error) {
+                console.error('Fetch error:', error)
+                setProducts([]) // fallback to empty list
+            }
+        }
+
+        fetchProducts()
+    }, [])
 
     const showToast = (msg, type = 'success') => {
         const toast = document.createElement('div')

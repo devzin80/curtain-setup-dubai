@@ -17,9 +17,9 @@ const AdditionalProducts = async () => {
                         return (
                             <div key={index}>
                                 <Product
-                                    name={product.name}
-                                    images={product.images}
-                                    slug={product.slug}
+                                    name={product.name || ''}
+                                    images={product.images || ''}
+                                    slug={product.slug || ''}
                                 />
                             </div>
                         )

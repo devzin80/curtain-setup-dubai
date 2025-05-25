@@ -51,9 +51,9 @@ const BestSellingProducts = async ({ title }) => {
                     {products?.map((product, index) => (
                         <Product
                             key={index}
-                            name={product.name}
-                            images={product.images}
-                            slug={product.slug}
+                            name={product.name || ''}
+                            images={product.images || ''}
+                            slug={product.slug || ''}
                         />
                     ))}
                 </div>

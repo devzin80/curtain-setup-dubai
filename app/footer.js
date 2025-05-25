@@ -180,8 +180,8 @@ const Footer = async () => {
                 {/* Brand Section */}
                 <div className='flex flex-col items-start gap-6 flex-shrink-0 w-full md:w-auto'>
                     <Image
-                        src={logo.url}
-                        alt={logo.name}
+                        src={logo.url || ''}
+                        alt={logo.name || ''}
                         width={150}
                         height={50}
                         priority
@@ -282,7 +282,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {phoneNumber.phoneNumber}
+                            {phoneNumber.phoneNumber || ''}
                         </p>
                     </div>
 
@@ -295,7 +295,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {phoneNumber.phoneNumber}
+                            {phoneNumber.phoneNumber || ''}
                         </p>
                     </div>
 
@@ -308,7 +308,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {email.email}
+                            {email.email || ''}
                         </p>
                     </div>
                 </div>
@@ -316,8 +316,7 @@ const Footer = async () => {
 
             {/* Copyright */}
             <div className='text-center border-t border-gray-200 py-6 px-4 text-sm md:text-base font-semibold text-gray-700'>
-                © {new Date().getFullYear()} Curtain Setup All Rights
-                Reserved
+                © {new Date().getFullYear()} Curtain Setup All Rights Reserved
             </div>
         </footer>
     )

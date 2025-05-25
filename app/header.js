@@ -14,7 +14,7 @@ const Header = async () => {
                 <Link href={'/'}>
                     <div className='overflow-hidden w-[200px] h-[60px] flex justify-center items-center'>
                         <Image
-                            src={logo.url}
+                            src={logo.url || ''}
                             alt='Website Logo'
                             width={200}
                             height={60}
@@ -35,7 +35,7 @@ const Header = async () => {
                         </div>
                     </Link>
                 </nav>
-                <MobileNav/>
+                <MobileNav />
             </div>
         </header>
     )
