@@ -267,7 +267,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {address.address}
+                            {address?.address || ''}
                         </p>
                     </div>
 
@@ -280,7 +280,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {phoneNumber.phoneNumber || ''}
+                            {phoneNumber?.phoneNumber || ''}
                         </p>
                     </div>
 
@@ -293,7 +293,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {phoneNumber.phoneNumber || ''}
+                            {phoneNumber?.phoneNumber || ''}
                         </p>
                     </div>
 
@@ -306,7 +306,7 @@ const Footer = async () => {
                             priority
                         />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
-                            {email.email || ''}
+                            {email?.email || ''}
                         </p>
                     </div>
                 </div>
