@@ -6,7 +6,7 @@ const Hero = async () => {
 
     return (
         <div className='w-auto max-h-[680px] relative overflow-hidden'>
-            {video.url && (
+            {video?.url && (
                 <video
                     className='h-full w-full object-cover overflow-hidden'
                     autoPlay

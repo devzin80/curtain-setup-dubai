@@ -175,7 +175,7 @@ const Footer = async () => {
             <div className='max-w-[90vw] md:max-w-[80vw] mx-auto flex flex-col md:flex-row justify-center gap-16 py-10'>
                 {/* Brand Section */}
                 <div className='flex flex-col items-start gap-6 flex-shrink-0 w-full md:w-auto'>
-                    {logo.url && (
+                    {logo?.url && (
                         <Image
                             src={logo.url || ''}
                             alt={logo.name || ''}
