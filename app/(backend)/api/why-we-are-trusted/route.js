@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid'
 import fs from 'fs/promises'
 import WhyUs from '../../models/whyus.model'
 
-
 const uploadDir = path.join(process.cwd(), 'public', 'uploads')
 if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
 
@@ -81,7 +80,7 @@ export async function PATCH(req) {
             const oldPath = path.join(
                 process.cwd(),
                 'public',
-                existingContent.image.url.replace('/uploads/', 'uploads/'),
+                existingContent.image.url, // <--- FIXED
             )
             try {
                 await fs.unlink(oldPath)
@@ -142,7 +141,7 @@ export async function DELETE(req) {
             const filePath = path.join(
                 process.cwd(),
                 'public',
-                Contents.image.url.replace('/uploads/', 'uploads/'),
+                Contents.image.url, // <--- FIXED
             )
             try {
                 await unlink(filePath)

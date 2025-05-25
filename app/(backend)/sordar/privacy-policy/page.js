@@ -5,59 +5,64 @@ import React, { useState, useEffect } from 'react'
 const PrivacyPolicy = () => {
     const [content, setContent] = useState('')
     const [contentId, setContentId] = useState('')
+    const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/api/privacy-policy`)
+                if (!response.ok) throw new Error('Failed to fetch policy')
+                const data = await response.json()
 
-useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/privacy-policy`,
-            )
-            if (!response.ok) throw new Error('Failed to fetch policy')
-            const data = await response.json()
-
-            if (data.length > 0) {
-                setContent(data[0].content)
-                setContentId(data[0]._id)
+                if (data.length > 0) {
+                    setContent(data[0].content)
+                    setContentId(data[0]._id)
+                }
+            } catch (error) {
+                console.error('Error fetching privacy policy:', error)
+                setError('Failed to load privacy policy.')
             }
-        } catch (error) {
-            console.error('Error fetching privacy policy:', error)
-            // Consider adding user-facing error state
         }
-    }
-    fetchData()
-}, [])// ✅ only run once
+        fetchData()
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
+        setMessage('')
+        setError('')
 
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/privacy-policy`,
-        )
-        const data = await res.json()
+        try {
+            if (!content) {
+                setError('Content cannot be empty.')
+                setLoading(false)
+                return
+            }
 
-        if (data.length === 0) {
-            // No content in DB – Create new
-            await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/privacy-policy`,
-                {
+            if (!contentId) {
+                // No content in DB – Create new
+                await fetch(`/api/privacy-policy`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content }),
-                },
-            )
-        } else {
-            // Content exists – Update existing
-            await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/privacy-policy`,
-                {
+                })
+                setMessage('Privacy policy created!')
+            } else {
+                // Content exists – Update existing
+                await fetch(`/api/privacy-policy`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: data[0]._id, content }),
-                },
-            )
+                    body: JSON.stringify({ id: contentId, content }),
+                })
+                setMessage('Privacy policy updated!')
+            }
+        } catch (err) {
+            setError('Failed to save privacy policy.')
+        } finally {
+            setLoading(false)
         }
-        alert('Post saved!')
     }
 
     return (
@@ -70,9 +75,18 @@ useEffect(() => {
                 <button
                     type='submit'
                     className='bg-blue-500 text-white px-4 py-2 mt-2'
+                    disabled={!content || loading}
                 >
-                    {contentId ? 'Update' : 'Save'}
+                    {loading ? 'Saving...' : contentId ? 'Update' : 'Save'}
                 </button>
+                {message && (
+                    <div className='mt-2 text-green-700 font-medium'>
+                        {message}
+                    </div>
+                )}
+                {error && (
+                    <div className='mt-2 text-red-600 font-medium'>{error}</div>
+                )}
             </form>
         </div>
     )

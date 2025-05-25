@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-// ${process.env.NEXT_PUBLIC_BASE_URL}
+//
 const PhoneNumber = () => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [phoneNumberId, setPhoneNumberId] = useState('')
@@ -11,9 +11,7 @@ const PhoneNumber = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`,
-            )
+            const response = await fetch(`/api/phone-number`)
 
             if (!response.ok) {
                 const errorText = await response.text()
@@ -35,36 +33,22 @@ const PhoneNumber = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!phoneNumber) return
 
         try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`,
-            )
-
-            
-
-            const data = await res.json()
-
-            if (data.length === 0) {
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ phoneNumber }),
-                    },
-                )
+            if (!phoneNumberId) {
+                await fetch(`/api/phone-number`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber }),
+                })
             } else {
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`,
-                    {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: data[0]._id, phoneNumber }),
-                    },
-                )
+                await fetch(`/api/phone-number`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: phoneNumberId, phoneNumber }),
+                })
             }
-
             alert('Phone Number saved!')
         } catch (err) {
             console.error('Submit error:', err)

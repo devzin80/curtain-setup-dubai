@@ -4,7 +4,6 @@ import fs from 'fs'
 import connectDB from '@/lib/db'
 import FooterLogo from '../../models/footerLogo.model'
 
-
 export async function POST(req) {
     try {
         const formData = await req.formData()
@@ -99,10 +98,8 @@ export async function PATCH(req) {
             )
         }
 
-        // Connect to database
         await connectDB()
 
-        // Find existing logo
         const existingLogo = await FooterLogo.findById(logoId)
         if (!existingLogo) {
             return new Response(JSON.stringify({ error: 'Logo not found' }), {
@@ -123,13 +120,12 @@ export async function PATCH(req) {
         // Save new file
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
-        const ext = file.name.split('.').pop()
-        const filename = file.name.split('.')[0]
+        const { name: filename, ext } = path.parse(file.name)
         const newFilePath = path.join(
             process.cwd(),
             'public',
             'logo',
-            file.name,
+            `${filename}${ext}`,
         )
 
         // Ensure logo directory exists
@@ -141,7 +137,7 @@ export async function PATCH(req) {
         await writeFile(newFilePath, buffer)
 
         // Update logo in DB
-        const newUrl = `/logo/${filename}.${ext}`
+        const newUrl = `/logo/${filename}${ext}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()

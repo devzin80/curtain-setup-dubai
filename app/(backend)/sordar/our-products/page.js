@@ -17,12 +17,10 @@ const OurProducts = () => {
     }, [])
 
     const fetchProducts = async () => {
-        const res = await fetch(
-            `/api/our-products`, 
-        )
+        const res = await fetch(`/api/our-products`)
         const data = await res.json()
-        console.log(data);
-        
+        console.log(data)
+
         setProducts(data)
     }
 
@@ -71,14 +69,11 @@ const OurProducts = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch(
-            `/api/our-products`,
-            {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            },
-        )
+        const res = await fetch(`/api/our-products`, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form),
+        })
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
@@ -97,12 +92,9 @@ const OurProducts = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this product?')) return
 
-        const res = await fetch(
-            `/api/our-products?id=${id}`,
-            {
-                method: 'DELETE',
-            },
-        )
+        const res = await fetch(`/api/our-products?id=${id}`, {
+            method: 'DELETE',
+        })
 
         if (res.ok) {
             showToast('Deleted!')
@@ -186,6 +178,7 @@ const OurProducts = () => {
                 <button
                     onClick={handleSubmit}
                     className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block'
+                    disabled={!form.title || !form.description || !form.image}
                 >
                     {form._id ? 'Update Media' : 'Add Media'}
                 </button>

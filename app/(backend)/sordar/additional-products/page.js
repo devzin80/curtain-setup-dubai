@@ -108,14 +108,19 @@ const AdditionalProducts = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch(
-            `/api/best-selling-products`,
-            {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            },
-        )
+        // Use FormData for file uploads
+        const formData = new FormData()
+        formData.append('name', form.name)
+        formData.append('slug', form.slug)
+        formData.append('category', form.category)
+        formData.append('description', form.description)
+        selectedFiles.forEach((file) => formData.append('files', file))
+        if (form._id) formData.append('_id', form._id)
+
+        const res = await fetch('/api/best-selling-products', {
+            method,
+            body: formData,
+        })
 
         if (res.ok) {
             showToast(form._id ? 'Product updated!' : 'Product added!')
@@ -136,6 +141,7 @@ const AdditionalProducts = () => {
 
     const handleEdit = (product) => {
         setForm(product)
+        setSelectedFiles([]) // Reset file input
         showToast('Edit mode enabled')
     }
 
@@ -145,12 +151,9 @@ const AdditionalProducts = () => {
         )
         if (!confirmed) return
 
-        const res = await fetch(
-            `/api/best-selling-products?id=${id}`,
-            {
-                method: 'DELETE',
-            },
-        )
+        const res = await fetch(`/api/best-selling-products?id=${id}`, {
+            method: 'DELETE',
+        })
 
         if (res.ok) {
             showToast('Product deleted!')
@@ -231,9 +234,9 @@ const AdditionalProducts = () => {
                         />
                     </div>
                     <div className='flex gap-3 flex-wrap mt-4'>
-                        {form?.images?.map((img, i) => (
+                        {form?.images?.map((img) => (
                             <div
-                                key={i}
+                                key={img.url || img.name}
                                 className='relative'
                             >
                                 <Image

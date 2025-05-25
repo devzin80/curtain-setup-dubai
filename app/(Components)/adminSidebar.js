@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const sidebar = [
     {
@@ -89,12 +90,12 @@ const SidebarItem = ({ item, level = 0 }) => {
             className='mb-2'
         >
             {item.link ? (
-                <a
+                <Link
                     href={item.link}
                     className='hover:text-amber-500 transition-colors font-medium block'
                 >
                     {item.name}
-                </a>
+                </Link>
             ) : (
                 <div className='font-bold'>{item.name}</div>
             )}

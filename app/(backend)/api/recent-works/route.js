@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid'
 import fs from 'fs/promises'
 import RecentWorks from '../../models/recentworks.model'
 
-
 const uploadDir = path.join(process.cwd(), 'public', 'uploads')
 if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
 
@@ -44,11 +43,11 @@ export async function POST(req) {
     if (contentType?.includes('multipart/form-data')) {
         const formData = await req.formData()
         const title = formData.get('title')
-        
+
         const image = await handleUpload(formData)
         const newWork = await RecentWorks.create({
             title,
-            
+
             image: image.length ? image[0] : null,
         })
 
@@ -63,7 +62,7 @@ export async function POST(req) {
 // PATCH: Update social media entry
 export async function PATCH(req) {
     await connectDB()
-    const { _id, title,  image } = await req.json()
+    const { _id, title, image } = await req.json()
 
     const existingWork = await RecentWorks.findById(_id)
     if (!existingWork) {
@@ -140,7 +139,7 @@ export async function DELETE(req) {
             const filePath = path.join(
                 process.cwd(),
                 'public',
-                ourProducts.image.url.replace('/uploads/', 'uploads/'),
+                recentWork.image.url, // <-- FIXED
             )
             try {
                 await unlink(filePath)

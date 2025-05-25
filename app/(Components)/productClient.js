@@ -4,7 +4,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const ProductClient = ({ product }) => {
-    const [mainImage, setMainImage] = useState(product.images[0])
+    // Use optional chaining and fallback for robustness
+    const [mainImage, setMainImage] = useState(
+        product.images?.[0] || { url: '/placeholder.png', name: 'No Image' },
+    )
 
     return (
         <div className='w-full'>
@@ -14,15 +17,23 @@ const ProductClient = ({ product }) => {
                     <div className='w-full lg:w-1/2'>
                         <Image
                             src={mainImage.url}
-                            alt={mainImage.name}
+                            alt={mainImage.name || product.name}
                             width={600}
                             height={600}
                             className='object-cover rounded-xl w-full h-[400px] sm:h-[500px] lg:h-[450px]'
                         />
                         <div className='flex gap-3 flex-wrap justify-center mt-4'>
-                            {product.images.map((img, idx) => (
+                            {(product.images?.length
+                                ? product.images
+                                : [
+                                      {
+                                          url: '/placeholder.png',
+                                          name: 'No Image',
+                                      },
+                                  ]
+                            ).map((img, idx) => (
                                 <button
-                                    key={idx}
+                                    key={img.url || idx}
                                     onClick={() => setMainImage(img)}
                                     className={`border-2 rounded-md overflow-hidden w-[70px] h-[70px] ${
                                         mainImage.url === img.url
@@ -32,7 +43,7 @@ const ProductClient = ({ product }) => {
                                 >
                                     <Image
                                         src={img.url}
-                                        alt={img.name}
+                                        alt={img.name || product.name}
                                         width={70}
                                         height={70}
                                         className='object-cover w-full h-full'

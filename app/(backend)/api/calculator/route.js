@@ -60,11 +60,9 @@ import Calculator from '../../models/calculator.model'
 //     }
 // }
 
-
 // export async function GET() {
 //     await connectDB()
 //     console.log('I am in calculator');
-    
 
 //     const calculator = await Calculator.find({}).lean()
 //     return NextResponse.json(calculator)
@@ -101,9 +99,7 @@ import Calculator from '../../models/calculator.model'
 //     }
 // }
 
-
 // /pages/api/calculator.js
-
 
 // POST - Create a new calculator
 export async function POST(req) {
@@ -123,7 +119,7 @@ export async function POST(req) {
     } catch (error) {
         return NextResponse.json(
             { message: 'Error creating calculator', error: error.message },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }
@@ -132,29 +128,32 @@ export async function POST(req) {
 export async function PATCH(req) {
     await connectDB()
     const body = await req.json()
-    console.log(body);
-    
+    console.log(body)
+
     const { id, name, hasVariants, price, factor, variants } = body
 
     try {
         const updated = await Calculator.findByIdAndUpdate(
             id,
             { name, hasVariants, price, factor, variants },
-            { new: true, }
+            { new: true },
         )
 
         if (!updated) {
             return NextResponse.json(
                 { message: 'Calculator not found' },
-                { status: 404 }
+                { status: 404 },
             )
         }
 
-        return NextResponse.json({ message: 'Updated successfully' }, { status: 200 })
+        return NextResponse.json(
+            { message: 'Updated successfully' },
+            { status: 200 },
+        )
     } catch (error) {
         return NextResponse.json(
             { message: 'Update failed', error: error.message },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }
@@ -169,7 +168,7 @@ export async function GET() {
     } catch (error) {
         return NextResponse.json(
             { message: 'Failed to fetch calculators', error: error.message },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }
@@ -202,7 +201,6 @@ export async function GET() {
 
 export async function DELETE(req) {
     await connectDB()
-
     const { id } = await req.json()
 
     if (!id) {
@@ -211,11 +209,12 @@ export async function DELETE(req) {
 
     try {
         const deleted = await Calculator.findByIdAndDelete(id)
-
         if (!deleted) {
-            return NextResponse.json({ message: 'Not found' }, { status: 404 })
+            return NextResponse.json(
+                { message: 'Calculator not found' },
+                { status: 404 },
+            )
         }
-
         return NextResponse.json(
             { message: 'Deleted successfully' },
             { status: 200 },
@@ -227,5 +226,3 @@ export async function DELETE(req) {
         )
     }
 }
-
-

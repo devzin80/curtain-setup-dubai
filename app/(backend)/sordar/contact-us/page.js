@@ -4,52 +4,55 @@ import React, { useState, useEffect } from 'react'
 const ContactUs = () => {
     const [address, setAddress] = useState('')
     const [addressId, setAddressId] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState('')
 
     const fetchData = async () => {
         try {
-            const response = await fetch(
-                `/api/contact-us`,
-            )
-            
+            const response = await fetch(`/api/contact-us`)
             const data = await response.json()
-
             if (data.length > 0) {
-                setAddress(data[0].address )
-                setAddressId(data[0]._id )
+                setAddress(data[0].address)
+                setAddressId(data[0]._id)
             }
         } catch (error) {
-            console.error('Error fetching privacy policy:', error)
-            // Consider adding user-facing error state
+            console.error('Error fetching contact address:', error)
+            setMessage('Failed to load address.')
         }
     }
+
     useEffect(() => {
         fetchData()
-    }, []) //
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        const res = await fetch(
-            `/api/contact-us`,
-        )
-        const data = await res.json()
-
-        if (data.length === 0) {
-            // No content in DB – Create new
-            await fetch(`/api/contact-us`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ address }),
-            })
-        } else {
-            // Content exists – Update existing
-            await fetch(`/api/contact-us`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: data[0]._id, address }),
-            })
+        setLoading(true)
+        setMessage('')
+        try {
+            if (!addressId) {
+                // Create new
+                await fetch(`/api/contact-us`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address }),
+                })
+                setMessage('Address saved!')
+            } else {
+                // Update existing
+                await fetch(`/api/contact-us`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: addressId, address }),
+                })
+                setMessage('Address updated!')
+            }
+            fetchData()
+        } catch (error) {
+            setMessage('Failed to save address.')
+        } finally {
+            setLoading(false)
         }
-        alert('Address saved!')
     }
 
     return (
@@ -70,9 +73,15 @@ const ContactUs = () => {
                 <button
                     type='submit'
                     className='bg-blue-500 text-white px-4 py-2 mt-2'
+                    disabled={!address || loading}
                 >
-                    {addressId ? 'Update' : 'Save'}
+                    {loading ? 'Saving...' : addressId ? 'Update' : 'Save'}
                 </button>
+                {message && (
+                    <div className='mt-2 text-green-700 font-medium'>
+                        {message}
+                    </div>
+                )}
             </form>
         </div>
     )

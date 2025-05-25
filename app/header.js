@@ -13,7 +13,7 @@ const Header = async () => {
 
                 <Link href={'/'}>
                     <div className='overflow-hidden w-[200px] h-[60px] flex justify-center items-center'>
-                        {logo?.url && (
+                        {logo?.url ? (
                             <Image
                                 src={logo.url}
                                 alt='Website Logo'
@@ -22,6 +22,10 @@ const Header = async () => {
                                 priority
                                 className='object-contain w-full h-full'
                             />
+                        ) : (
+                            <span className='text-lg font-bold'>
+                                Curtain Setup
+                            </span>
                         )}
                     </div>
                 </Link>

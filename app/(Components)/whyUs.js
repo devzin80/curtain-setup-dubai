@@ -4,9 +4,6 @@
 
 // const WhyUs = async () => {
 //     const contents = await getWhyUs()
-    
-    
-    
 
 //     return (
 //         <div className='my-10 z-0'>
@@ -25,7 +22,6 @@
 
 // export default WhyUs
 
-
 import { getWhyUs } from '@/lib/actions/dataFetch'
 import React from 'react'
 import Content from './whyUsContent'
@@ -39,6 +35,11 @@ const WhyUs = async () => {
                 Why We Are Trusted
             </h1>
             <div className='flex flex-col gap-16 items-center'>
+                {contents?.length === 0 && (
+                    <p className='text-center text-gray-500'>
+                        No content available.
+                    </p>
+                )}
                 {contents?.map((content, index) => (
                     <Content
                         key={index}

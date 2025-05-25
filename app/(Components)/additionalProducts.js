@@ -13,17 +13,19 @@ const AdditionalProducts = async () => {
             </h1>
             <div className=' flex justify-center items-center'>
                 <div className='w-[80vw] flex justify-start items-center gap-12 my-12 flex-wrap'>
-                    {products?.map((product, index) => {
-                        return (
-                            <div key={index}>
+                    {Array.isArray(products) && products.length > 0 ? (
+                        products.map((product, index) => (
+                            <div key={product._id || product.slug || index}>
                                 <Product
                                     name={product.name || ''}
-                                    images={product.images || ''}
+                                    images={product.images || []}
                                     slug={product.slug || ''}
                                 />
                             </div>
-                        )
-                    })}
+                        ))
+                    ) : (
+                        <div>No additional products found.</div>
+                    )}
                 </div>
             </div>
         </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
 
 export default function Uploader() {
@@ -11,13 +10,20 @@ export default function Uploader() {
     const [showUploader, setShowUploader] = useState(false)
     const inputRef = useRef(null)
 
-    // Fetch existing logo on initial render
+    // Clean up object URLs to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            files.forEach((f) => URL.revokeObjectURL(f.preview))
+        }
+    }, [files])
+
+    // Fetch existing video on initial render
     useEffect(() => {
         const fetchVideo = async () => {
             try {
                 const res = await fetch(apiPath)
                 const data = await res.json()
-    
+
                 if (data?.length > 0) {
                     const video = data[0]
                     setUploadId(video._id)
@@ -34,12 +40,16 @@ export default function Uploader() {
         fetchVideo()
     }, [apiPath])
 
+    // Only allow one video at a time
     const handleFiles = (selectedFiles) => {
-        const filesArray = Array.from(selectedFiles).map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }))
-        setFiles((prev) => [...prev, ...filesArray])
+        if (!selectedFiles.length) return
+        const file = selectedFiles[0]
+        setFiles([
+            {
+                file,
+                preview: URL.createObjectURL(file),
+            },
+        ])
     }
 
     const handleDragOver = (e) => {
@@ -74,7 +84,7 @@ export default function Uploader() {
                 setVideoUrl(data.video.url)
                 setFiles([])
                 setShowUploader(false)
-                alert('video updated successfully')
+                alert('Video updated successfully')
             } else {
                 console.error('Invalid update response:', data)
             }
@@ -87,7 +97,7 @@ export default function Uploader() {
         if (!files.length) return
 
         const formData = new FormData()
-        files.forEach(({ file }) => formData.append('file', file))
+        formData.append('file', files[0].file)
 
         try {
             const res = await fetch(apiPath, {
@@ -95,8 +105,6 @@ export default function Uploader() {
                 body: formData,
             })
             const data = await res.json()
-            console.log('I am from uploader', data);
-            
 
             if (data?.videos?.length > 0) {
                 const uploadedVideo = data.videos[0]
@@ -148,13 +156,13 @@ export default function Uploader() {
         >
             <input
                 type='file'
-                multiple
+                accept='video/*'
                 onChange={(e) => handleFiles(e.target.files)}
                 hidden
                 ref={inputRef}
             />
             <div className='text-center text-blue-500 font-semibold'>
-                Drag & Drop files here or Click to Browse
+                Drag & Drop video here or Click to Browse
             </div>
 
             {files.length > 0 && (
@@ -170,8 +178,9 @@ export default function Uploader() {
                                     controls
                                     className='w-2/4 h-2/4 object-cover rounded'
                                 />
-                                
+
                                 <button
+                                    aria-label='Remove video'
                                     onClick={(e) => {
                                         e.stopPropagation()
                                         handleDelete(fileObj.preview)
@@ -191,7 +200,7 @@ export default function Uploader() {
                         }}
                         className='mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded cursor-pointer'
                     >
-                        {uploadId ? 'Update video' : 'Upload Video'}
+                        {uploadId ? 'Update Video' : 'Upload Video'}
                     </button>
                 </>
             )}

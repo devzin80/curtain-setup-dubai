@@ -7,8 +7,6 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import fs from 'fs/promises'
 
-
-
 const uploadDir = path.join(process.cwd(), 'public', 'uploads')
 if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
 
@@ -81,7 +79,7 @@ export async function PATCH(req) {
             const oldPath = path.join(
                 process.cwd(),
                 'public',
-                existingMedia.logo.url.replace('/uploads/', 'uploads/'),
+                existingMedia.logo.url, // <--- FIXED
             )
             try {
                 await fs.unlink(oldPath)
@@ -115,8 +113,6 @@ export async function PATCH(req) {
 
     return NextResponse.json(updated, { status: 200 })
 }
-
-
 
 // DELETE: Delete social media and associated logo
 export async function DELETE(req) {

@@ -2,157 +2,146 @@
 import React, { useEffect, useState } from 'react'
 
 const Calculator = () => {
-    // const [curtainType, setCurtainType] = useState([])
-    // const [selectedStyle, setSelectedStyle] = useState(styles[0])
-    // const [width, setWidth] = useState(1) // in centimeters
-    // const [height, setHeight] = useState(1) // in centimeters
-
-    const fetchCalculator = async () => {
-        const res = await fetch('/api/calculator')
-        const data = await res.json()
-
-        return data
-        // setProducts(data)
-    }
+    const [calculators, setCalculators] = useState([])
+    const [selectedCalculator, setSelectedCalculator] = useState(null)
+    const [selectedVariant, setSelectedVariant] = useState(null)
+    const [width, setWidth] = useState(1) // meters
+    const [height, setHeight] = useState(1) // meters
 
     useEffect(() => {
-        fetchCalculator()
+        fetchCalculators()
     }, [])
 
-    const curtainTypes = [
-        'Sheers only',
-        'Blackout only',
-        'Sheers + Blackout',
-        'Roman blinds',
-        'Roller blinds',
-    ]
+    const fetchCalculators = async () => {
+        const res = await fetch('/api/calculator')
+        const data = await res.json()
+        setCalculators(data)
+        if (data.length > 0) setSelectedCalculator(data[0])
+    }
 
-    // Style options with multiplier factors.
-    // const styles = [
-    //     { name: 'American (x2 window width)', factor: 2 },
-    //     { name: 'Wavy (x3 window width)', factor: 3 },
-    // ]
+    // Calculate area in m²
+    const windowArea = width * height
 
-    // Pricing constants.
-    const PRICE_PER_SQM = 50 // Price per effective square meter (AED)
-    const MOTORIZED_PRICE = 10 // Fixed cost for the motorized option (AED)
+    // Get factor and price from selected calculator or variant
+    let factor = 1
+    let pricePerSqm = 0
 
-    // State hooks.
+    if (selectedCalculator) {
+        if (selectedCalculator.hasVariants && selectedVariant) {
+            factor = selectedVariant.factor
+            pricePerSqm = selectedVariant.price
+        } else if (!selectedCalculator.hasVariants) {
+            factor = selectedCalculator.factor
+            pricePerSqm = selectedCalculator.price
+        }
+    }
 
-    // Calculate the window area (cm converted to m).
-    // const windowArea = (width ) * (height )
-
-    // Calculate the effective area based on selected style.
-    // const effectiveArea = windowArea * selectedStyle.factor
-
-    // Calculate the total price.
-    // const totalPrice =
-    //     effectiveArea * PRICE_PER_SQM + (motorized ? MOTORIZED_PRICE : 0)
+    const effectiveArea = windowArea * factor
+    const totalPrice = effectiveArea * pricePerSqm
 
     return (
-        <></>
-        // <div className='max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg my-6'>
-        //     <h1 className='text-center text-3xl font-bold mb-6'>
-        //         Online Price Estimator
-        //     </h1>
+        <div className='max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg my-6'>
+            <h1 className='text-center text-3xl font-bold mb-6'>
+                Online Price Estimator
+            </h1>
 
-        //     <section className='mb-6'>
-        //         <h2 className='text-xl font-semibold mb-2'>
-        //             What kind of curtains are you looking for?
-        //         </h2>
-        //         {curtainTypes.map((type) => (
-        //             <label
-        //                 key={type}
-        //                 className='block mb-2'
-        //             >
-        //                 <input
-        //                     type='radio'
-        //                     name='curtainType'
-        //                     value={type}
-        //                     checked={curtainType === type}
-        //                     onChange={() => setCurtainType(type)}
-        //                     className='mr-2'
-        //                 />
-        //                 {type}
-        //             </label>
-        //         ))}
-        //     </section>
+            {/* Calculator Type */}
+            <section className='mb-6'>
+                <h2 className='text-xl font-semibold mb-2'>
+                    Select Product/Calculator
+                </h2>
+                <select
+                    className='w-full border p-2 rounded'
+                    value={selectedCalculator?._id || ''}
+                    onChange={(e) => {
+                        const calc = calculators.find(
+                            (c) => c._id === e.target.value,
+                        )
+                        setSelectedCalculator(calc)
+                        setSelectedVariant(null)
+                    }}
+                >
+                    {calculators.map((calc) => (
+                        <option
+                            key={calc._id}
+                            value={calc._id}
+                        >
+                            {calc.name}
+                        </option>
+                    ))}
+                </select>
+            </section>
 
-        //     <section className='mb-6'>
-        //         <h2 className='text-xl font-semibold mb-2'>Choose style</h2>
-        //         {styles.map((styleOption) => (
-        //             <label
-        //                 key={styleOption.name}
-        //                 className='block mb-2'
-        //             >
-        //                 <input
-        //                     type='radio'
-        //                     name='style'
-        //                     value={styleOption.name}
-        //                     checked={selectedStyle.name === styleOption.name}
-        //                     onChange={() => setSelectedStyle(styleOption)}
-        //                     className='mr-2'
-        //                 />
-        //                 {styleOption.name}
-        //             </label>
-        //         ))}
-        //     </section>
+            {/* Variant Selection */}
+            {selectedCalculator?.hasVariants && (
+                <section className='mb-6'>
+                    <h2 className='text-xl font-semibold mb-2'>
+                        Select Variant
+                    </h2>
+                    <select
+                        className='w-full border p-2 rounded'
+                        value={selectedVariant?._id || ''}
+                        onChange={(e) => {
+                            const variant = selectedCalculator.variants.find(
+                                (v) => v._id === e.target.value,
+                            )
+                            setSelectedVariant(variant)
+                        }}
+                    >
+                        <option value=''>Select a variant</option>
+                        {selectedCalculator.variants.map((variant) => (
+                            <option
+                                key={variant._id}
+                                value={variant._id}
+                            >
+                                {variant.name} (Price: {variant.price} AED,
+                                Factor: {variant.factor})
+                            </option>
+                        ))}
+                    </select>
+                </section>
+            )}
 
-        //     <section className='mb-6'>
-        //         <h2 className='text-xl font-semibold mb-2'>
-        //             Width (cm):{' '}
-        //             <span className='font-normal text-lg'>{width}</span>
-        //         </h2>
-        //         <input
-        //             type='range'
-        //             min='100'
-        //             max='1000'
-        //             value={width}
-        //             onChange={(e) => setWidth(Number(e.target.value))}
-        //             className='w-full'
-        //         />
-        //     </section>
+            {/* Width Input */}
+            <section className='mb-6'>
+                <h2 className='text-xl font-semibold mb-2'>Width (meters):</h2>
+                <input
+                    type='number'
+                    min='0.1'
+                    step='0.01'
+                    value={width}
+                    onChange={(e) => setWidth(Number(e.target.value))}
+                    className='w-full border p-2 rounded'
+                />
+            </section>
 
-        //     <section className='mb-6'>
-        //         <h2 className='text-xl font-semibold mb-2'>
-        //             Height (cm):{' '}
-        //             <span className='font-normal text-lg'>{height}</span>
-        //         </h2>
-        //         <input
-        //             type='range'
-        //             min='100'
-        //             max='1000'
-        //             value={height}
-        //             onChange={(e) => setHeight(Number(e.target.value))}
-        //             className='w-full'
-        //         />
-        //     </section>
+            {/* Height Input */}
+            <section className='mb-6'>
+                <h2 className='text-xl font-semibold mb-2'>Height (meters):</h2>
+                <input
+                    type='number'
+                    min='0.1'
+                    step='0.01'
+                    value={height}
+                    onChange={(e) => setHeight(Number(e.target.value))}
+                    className='w-full border p-2 rounded'
+                />
+            </section>
 
-        //     <section className='mb-6'>
-        //         <label className='flex items-center'>
-        //             <input
-        //                 type='checkbox'
-        //                 checked={motorized}
-        //                 onChange={() => setMotorized((prev) => !prev)}
-        //                 className='mr-2'
-        //             />
-        //             <span>
-        //                 Add a motorized option? (Adds {MOTORIZED_PRICE} AED)
-        //             </span>
-        //         </label>
-        //     </section>
+            <hr className='my-6' />
 
-        //     <hr className='my-6' />
-
-        //     <section className='text-center'>
-        //         <h2 className='text-2xl font-bold mb-2'>
-        //             Total amount: {totalPrice.toFixed(2)} AED
-        //         </h2>
-        //         <h3 className='text-lg'>
-        //             Curtains Square: {windowArea.toFixed(2)} m²
-        //         </h3>
-        //     </section>
-        // </div>
+            {/* Results */}
+            <section className='text-center'>
+                <h2 className='text-2xl font-bold mb-2'>
+                    Total amount:{' '}
+                    {isNaN(totalPrice) ? '—' : totalPrice.toFixed(2)} AED
+                </h2>
+                <h3 className='text-lg'>
+                    Curtains Square:{' '}
+                    {isNaN(effectiveArea) ? '—' : effectiveArea.toFixed(2)} m²
+                </h3>
+            </section>
+        </div>
     )
 }
 

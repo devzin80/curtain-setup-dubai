@@ -38,7 +38,6 @@ export default function Editor({ onChange, content }) {
                         'imageGallery',
                         'fullScreen',
                         'showBlocks',
-                        'codeView',
                         'preview',
                         'print',
                         'save',

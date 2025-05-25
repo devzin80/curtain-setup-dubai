@@ -4,7 +4,6 @@
 
 // const BestSellingProducts = async ({title}) => {
 //     const products = await getProducts('curtains')
-    
 
 //     return (
 //         <div className='py-10 '>
@@ -32,7 +31,6 @@
 
 // export default BestSellingProducts
 
-
 import { getProducts } from '@/lib/actions/dataFetch'
 import React from 'react'
 import Product from './product'
@@ -48,14 +46,18 @@ const BestSellingProducts = async ({ title }) => {
 
             <div className='flex justify-center'>
                 <div className='w-[80vw] flex flex-wrap justify-center sm:justify-start gap-6 sm:gap-12'>
-                    {products?.map((product, index) => (
-                        <Product
-                            key={index}
-                            name={product.name || ''}
-                            images={product.images || ''}
-                            slug={product.slug || ''}
-                        />
-                    ))}
+                    {Array.isArray(products) && products.length > 0 ? (
+                        products.map((product, index) => (
+                            <Product
+                                key={product._id || product.slug || index}
+                                name={product.name || ''}
+                                images={product.images || []}
+                                slug={product.slug || ''}
+                            />
+                        ))
+                    ) : (
+                        <div>No products found.</div>
+                    )}
                 </div>
             </div>
         </div>

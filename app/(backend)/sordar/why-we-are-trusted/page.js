@@ -13,11 +13,14 @@ const WhyWeAreTrusted = () => {
     })
     const inputRef = useRef(null)
     const fetchContents = async () => {
-        const res = await fetch(
-            ` /api/why-we-are-trusted`,
-        )
-        const data = await res.json()
-        setContents(data)
+        try {
+            const res = await fetch(`/api/why-we-are-trusted`)
+            if (!res.ok) throw new Error('Failed to fetch')
+            const data = await res.json()
+            setContents(data)
+        } catch (err) {
+            showToast('Failed to load contents', 'error')
+        }
     }
 
     useEffect(() => {
@@ -68,28 +71,27 @@ const WhyWeAreTrusted = () => {
 
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
-
-        const res = await fetch(
-            ` /api/why-we-are-trusted`,
-            {
+        try {
+            const res = await fetch(`/api/why-we-are-trusted`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form),
-            },
-        )
-
-        if (res.ok) {
-            showToast(form._id ? 'Updated!' : 'Added!')
-            setForm({
-                _id: null,
-                title: '',
-                description: '',
-                image: null,
-                button: '',
             })
-            fetchContents()
-        } else {
-            showToast('Failed to save', 'error')
+            if (res.ok) {
+                showToast(form._id ? 'Updated!' : 'Added!')
+                setForm({
+                    _id: null,
+                    title: '',
+                    description: '',
+                    image: null,
+                    button: '',
+                })
+                fetchContents()
+            } else {
+                showToast('Failed to save', 'error')
+            }
+        } catch (err) {
+            showToast('Network error', 'error')
         }
     }
 
@@ -101,12 +103,9 @@ const WhyWeAreTrusted = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this content?')) return
 
-        const res = await fetch(
-            `/api/why-we-are-trusted?id=${id}`,
-            {
-                method: 'DELETE',
-            },
-        )
+        const res = await fetch(`/api/why-we-are-trusted?id=${id}`, {
+            method: 'DELETE',
+        })
 
         if (res.ok) {
             showToast('Deleted!')
@@ -211,6 +210,7 @@ const WhyWeAreTrusted = () => {
                 <button
                     onClick={handleSubmit}
                     className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block'
+                    disabled={!form.title || !form.description || !form.image}
                 >
                     {form._id ? 'Update content' : 'Add content'}
                 </button>

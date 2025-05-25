@@ -19,24 +19,19 @@ const BestSellingProducts = () => {
     const fetchProducts = async () => {
         try {
             const category = 'curtains'
-
-            // Use relative URL for client-side fetch (safe in all environments)
             const res = await fetch(
                 `/api/best-selling-products?category=${category}`,
             )
-
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`)
             }
-
             const data = await res.json()
             setProducts(data)
         } catch (error) {
             console.error('Error fetching products:', error)
-            setProducts([]) // Optional: fallback to empty list
+            setProducts([])
         }
     }
-      
 
     useEffect(() => {
         fetchProducts()
@@ -54,8 +49,6 @@ const BestSellingProducts = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-
-        // Auto-generate slug when "name" field changes
         if (name === 'name') {
             setForm((prev) => ({
                 ...prev,
@@ -73,6 +66,7 @@ const BestSellingProducts = () => {
     const openFilePicker = () => {
         inputRef.current.click()
     }
+
     const handleFileInput = async (files) => {
         const fileList = Array.from(files)
         setSelectedFiles((prev) => [...prev, ...fileList])
@@ -110,19 +104,28 @@ const BestSellingProducts = () => {
         const updatedImages = [...form.images]
         updatedImages.splice(index, 1)
         setForm((prev) => ({ ...prev, images: updatedImages }))
+        setSelectedFiles((prev) => {
+            const updated = [...prev]
+            updated.splice(index, 1)
+            return updated
+        })
     }
 
+    // Use FormData for file uploads (recommended for images)
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
+        const formData = new FormData()
+        formData.append('name', form.name)
+        formData.append('slug', form.slug)
+        formData.append('category', form.category)
+        formData.append('description', form.description)
+        if (form._id) formData.append('_id', form._id)
+        selectedFiles.forEach((file) => formData.append('files', file))
 
-        const res = await fetch(
-            `/api/best-selling-products`,
-            {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            },
-        )
+        const res = await fetch(`/api/best-selling-products`, {
+            method,
+            body: formData,
+        })
 
         if (res.ok) {
             showToast(form._id ? 'Product updated!' : 'Product added!')
@@ -143,6 +146,7 @@ const BestSellingProducts = () => {
 
     const handleEdit = (product) => {
         setForm(product)
+        setSelectedFiles([]) // Reset file input on edit
         showToast('Edit mode enabled')
     }
 
@@ -152,12 +156,9 @@ const BestSellingProducts = () => {
         )
         if (!confirmed) return
 
-        const res = await fetch(
-            `/api/best-selling-products?id=${id}`,
-            {
-                method: 'DELETE',
-            },
-        )
+        const res = await fetch(`/api/best-selling-products?id=${id}`, {
+            method: 'DELETE',
+        })
 
         if (res.ok) {
             showToast('Product deleted!')
@@ -252,7 +253,7 @@ const BestSellingProducts = () => {
                     <div className='flex gap-3 flex-wrap mt-4'>
                         {form.images?.map((img, i) => (
                             <div
-                                key={i}
+                                key={img.url || img.name}
                                 className='relative'
                             >
                                 <Image
@@ -266,6 +267,7 @@ const BestSellingProducts = () => {
                                     onClick={() => removeImage(i)}
                                     className='absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center'
                                     title='Remove'
+                                    aria-label='Remove image'
                                 >
                                     ×
                                 </button>
@@ -273,11 +275,14 @@ const BestSellingProducts = () => {
                         ))}
                     </div>
                 </div>
-                {/* <Uploader apiPath={'/api/best-selling-products'} /> */}
 
                 <button
                     onClick={handleSubmit}
                     className='text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block'
+                    disabled={
+                        form.name.trim() === '' ||
+                        form.description.trim() === ''
+                    }
                 >
                     {form._id ? 'Update Product' : 'Add Product'}
                 </button>
@@ -301,12 +306,14 @@ const BestSellingProducts = () => {
                                 <button
                                     onClick={() => handleEdit(product)}
                                     className='text-sm text-blue-600 underline'
+                                    aria-label='Edit product'
                                 >
                                     Edit
                                 </button>
                                 <button
                                     onClick={() => handleDelete(product._id)}
                                     className='text-sm text-blue-600 underline'
+                                    aria-label='Delete product'
                                 >
                                     Delete
                                 </button>
@@ -315,9 +322,9 @@ const BestSellingProducts = () => {
                                 {product.category}
                             </p>
                             <div className='flex gap-2 flex-wrap'>
-                                {product.images?.map((img, i) => (
+                                {product.images?.map((img) => (
                                     <Image
-                                        key={i}
+                                        key={img.url || img.name}
                                         src={img.url}
                                         alt={img.name}
                                         width={60}

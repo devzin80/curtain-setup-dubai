@@ -50,7 +50,6 @@ export async function POST(req) {
             description,
             image: image.length ? image[0] : null,
         })
-        
 
         return NextResponse.json(newProduct, { status: 201 })
     } else {
@@ -79,7 +78,7 @@ export async function PATCH(req) {
             const oldPath = path.join(
                 process.cwd(),
                 'public',
-                existingProduct.image.url.replace('/uploads/', 'uploads/'),
+                existingProduct.image.url, // <--- FIXED
             )
             try {
                 await fs.unlink(oldPath)
@@ -89,12 +88,10 @@ export async function PATCH(req) {
         }
 
         // Save new image to disk
-        const ext = image.name.split('.')[1]
-
+        const ext = image.name.split('.').pop()
         const base64Data = image.url.split(',')[1]
         const buffer = Buffer.from(base64Data, 'base64')
         const filename = `${uuidv4()}.${ext}`
-        const uploadDir = path.join(process.cwd(), 'public/uploads')
         await fs.mkdir(uploadDir, { recursive: true })
         const filePath = path.join(uploadDir, filename)
         await fs.writeFile(filePath, buffer)

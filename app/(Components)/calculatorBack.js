@@ -496,14 +496,14 @@ export default function CalculatorPage() {
     })
 
     
-// `${process.env.NEXT_PUBLIC_BASE_URL}/api/phone-number`
+// `/api/phone-number`
 
     useEffect(() => {
         fetchCalculators()
     }, [])
     const fetchCalculators = async () => {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+            `/api/calculator`,
         )
         const data = await res.json()
         setCalculators(data)
@@ -559,7 +559,7 @@ const handleSubmit = async (e) => {
     const method = form._id ? 'PATCH' : 'POST'
 
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+        `/api/calculator`,
         {
             method,
             headers: { 'Content-Type': 'application/json' },
@@ -599,7 +599,7 @@ const handleDelete = async (id) => {
     if (!confirm('Are you sure?')) return
 
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/calculator`,
+        `/api/calculator`,
         {
             method: 'DELETE',
             headers: {

@@ -84,13 +84,15 @@ const Content = ({ content, index }) => {
                     style={{ y: yImage }}
                     className='w-full md:w-1/2'
                 >
-                    <Image
-                        src={content.image.url}
-                        alt={content.image.name}
-                        width={600}
-                        height={450}
-                        className='object-cover rounded-2xl w-full h-[250px] sm:h-[350px] md:h-[450px]'
-                    />
+                    {content.image?.url && (
+                        <Image
+                            src={content.image.url}
+                            alt={content.image.name || 'Why Us Image'}
+                            width={600}
+                            height={450}
+                            className='object-cover rounded-2xl w-full h-[250px] sm:h-[350px] md:h-[450px]'
+                        />
+                    )}
                 </motion.div>
                 <div className='w-full md:w-1/2 text-left px-2 md:px-6'>
                     <h2 className='text-xl sm:text-2xl md:text-3xl font-semibold text-blue-800 mb-4'>
@@ -100,7 +102,8 @@ const Content = ({ content, index }) => {
                         {content.description}
                     </p>
 
-                    {content.button && (
+                    {(content.button === 'free-visit' ||
+                        content.button === 'price-calculator') && (
                         <Link
                             href={
                                 content.button === 'free-visit'

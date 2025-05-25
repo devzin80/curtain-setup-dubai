@@ -177,12 +177,12 @@ const Footer = async () => {
                 <div className='flex flex-col items-start gap-6 flex-shrink-0 w-full md:w-auto'>
                     {logo?.url && (
                         <Image
-                            src={logo.url || ''}
-                            alt={logo.name || ''}
-                            width={150}
-                            height={50}
+                            src={logo.url }
+                            alt={logo.name}
+                            width={240}
+                            height={60}
                             priority
-                            className='object-contain'
+                            className='object-cover'
                         />
                     )}
                     <p className='text-base md:text-lg font-bold'>

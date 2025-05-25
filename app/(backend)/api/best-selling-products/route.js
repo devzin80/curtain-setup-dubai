@@ -40,7 +40,6 @@ export async function GET(req) {
     return NextResponse.json(products)
 }
 
-
 // ✅ POST: Create product
 export async function POST(req) {
     await connectDB()
@@ -111,11 +110,7 @@ export async function DELETE(req) {
 
     // Delete image files
     for (const img of product.images || []) {
-        const filePath = path.join(
-            process.cwd(),
-            'public',
-            img.url.replace('/uploads/', 'uploads/'),
-        )
+        const filePath = path.join(process.cwd(), 'public', img.url)
         try {
             await unlink(filePath)
         } catch (err) {

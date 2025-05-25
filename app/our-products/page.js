@@ -10,6 +10,11 @@ const Product = async () => {
         <div>
             <div className='bg-[#f9f6f3] py-12 px-4 md:px-8'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto'>
+                    {ourProducts.length === 0 && (
+                        <div className='col-span-full text-center text-gray-500'>
+                            No products found.
+                        </div>
+                    )}
                     {ourProducts.map((product, index) => {
                         return (
                             <OurProducts
@@ -19,8 +24,7 @@ const Product = async () => {
                         )
                     })}
                 </div>
-                    <BestSellingProducts title='Best Selling Products' />
-
+                <BestSellingProducts title='Best Selling Products' />
             </div>
         </div>
     )

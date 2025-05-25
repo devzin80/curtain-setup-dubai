@@ -1,4 +1,4 @@
-import { writeFile , unlink} from 'fs/promises'
+import { writeFile, unlink } from 'fs/promises'
 import path from 'path'
 import fs from 'fs'
 import connectDB from '@/lib/db'
@@ -36,16 +36,15 @@ export async function POST(req) {
         for (const file of filesToProcess) {
             const bytes = await file.arrayBuffer()
             const buffer = Buffer.from(bytes)
-
-            const ext = file.name.split('.').pop()
-            const filename = file.name.split('.')[0]
-            const filepath = path.join(logoDir, file.name)
+            const { name: filename, ext } = path.parse(file.name)
+            const fileSaveName = `${filename}${ext}`
+            const filepath = path.join(logoDir, fileSaveName)
 
             // Write file to the disk
             await writeFile(filepath, buffer)
 
             // Create the URL for the uploaded file
-            const fileUrl = `/logo/${filename}.${ext}`
+            const fileUrl = `/logo/${fileSaveName}`
 
             // Push the uploaded file info to the array
             uploadedFiles.push({ filename, url: fileUrl })
@@ -80,14 +79,17 @@ export async function POST(req) {
 }
 
 export async function GET() {
-    
+    try {
         await connectDB()
         const logos = await Logo.find({}).lean()
         return Response.json(logos)
- 
-
+    } catch (error) {
+        console.error('GET error:', error)
+        return new Response(JSON.stringify({ error: 'Server error' }), {
+            status: 500,
+        })
+    }
 }
-
 
 export async function PATCH(req) {
     try {
@@ -126,13 +128,13 @@ export async function PATCH(req) {
         // Save new file
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
-        const ext = file.name.split('.').pop()
-        const filename = file.name.split('.')[0]
+        const { name: filename, ext } = path.parse(file.name)
+        const fileSaveName = `${filename}${ext}`
         const newFilePath = path.join(
             process.cwd(),
             'public',
             'logo',
-            file.name,
+            fileSaveName,
         )
 
         // Ensure logo directory exists
@@ -144,17 +146,14 @@ export async function PATCH(req) {
         await writeFile(newFilePath, buffer)
 
         // Update logo in DB
-        const newUrl = `/logo/${filename}.${ext}`
+        const newUrl = `/logo/${fileSaveName}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()
 
-        return new Response(
-            JSON.stringify({ message: 'Logo updated', logo: existingLogo }),
-            {
-                status: 200,
-            },
-        )
+        return new Response(JSON.stringify({ logo: existingLogo }), {
+            status: 200,
+        })
     } catch (error) {
         console.error('Update error:', error)
         return new Response(JSON.stringify({ error: 'Server error' }), {

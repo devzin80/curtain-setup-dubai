@@ -16,9 +16,7 @@ const OurRecentWorks = () => {
     }, [])
 
     const fetchRecentWorks = async () => {
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works`,
-        )
+        const res = await fetch(`/api/recent-works`)
         const data = await res.json()
         setRecentWorks(data)
     }
@@ -64,22 +62,19 @@ const OurRecentWorks = () => {
     const handleDragOver = (e) => e.preventDefault()
 
     const removeImage = () => setForm((prev) => ({ ...prev, image: null }))
-    // ${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products
+    // /api/our-products
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works`,
-            {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            },
-        )
+        const res = await fetch(`/api/recent-works`, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form),
+        })
 
         if (res.ok) {
             showToast(form._id ? 'Updated!' : 'Added!')
-            setForm({ _id: null, location: '',  image: null })
+            setForm({ _id: null, location: '', image: null })
             fetchRecentWorks()
         } else {
             showToast('Failed to save', 'error')
@@ -94,12 +89,9 @@ const OurRecentWorks = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this ?')) return
 
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/recent-works?id=${id}`,
-            {
-                method: 'DELETE',
-            },
-        )
+        const res = await fetch(`/api/recent-works?id=${id}`, {
+            method: 'DELETE',
+        })
 
         if (res.ok) {
             showToast('Deleted!')
@@ -171,6 +163,7 @@ const OurRecentWorks = () => {
                 <button
                     onClick={handleSubmit}
                     className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block'
+                    disabled={!form.location || !form.image}
                 >
                     {form._id ? 'Update ' : 'Upload'}
                 </button>
@@ -225,5 +218,3 @@ const OurRecentWorks = () => {
 }
 
 export default OurRecentWorks
-
-

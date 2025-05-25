@@ -8,18 +8,17 @@ const window = new JSDOM('').window
 const purify = DOMPurify(window)
 
 const PrivacyPolicy = async () => {
-
-
     await connectDB()
     const privacy = await Privacy.find().lean()
 
+    const content = privacy[0]?.content || '<p>No privacy policy found.</p>'
 
     return (
         <div className='flex justify-center items-center'>
             <div className='w-3/4 my-10'>
                 <article
                     dangerouslySetInnerHTML={{
-                        __html: purify.sanitize(privacy[0].content),
+                        __html: purify.sanitize(content),
                     }}
                 />
             </div>

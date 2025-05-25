@@ -1,4 +1,3 @@
-import connectDB from '@/lib/db'
 import AdditionalProducts from './(Components)/additionalProducts'
 import BestSellingProducts from './(Components)/bestSelling'
 import Hero from './(Components)/hero'
