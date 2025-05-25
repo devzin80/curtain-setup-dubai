@@ -166,7 +166,7 @@ const AdditionalProducts = () => {
                         type='text'
                         name='name'
                         className='w-full border p-2 rounded'
-                        value={form.name || ''}
+                        value={form?.name || ''}
                         onChange={handleChange}
                     />
                 </div>
@@ -177,7 +177,7 @@ const AdditionalProducts = () => {
                         type='text'
                         name='slug'
                         className='w-full border p-2 rounded bg-gray-100'
-                        value={form.slug}
+                        value={form?.slug}
                         readOnly
                     />
                 </div>
@@ -187,7 +187,7 @@ const AdditionalProducts = () => {
                     <select
                         name='category'
                         className='w-full border p-2 rounded'
-                        value={form.category || ''}
+                        value={form?.category || ''}
                         onChange={handleChange}
                     >
                         <option
@@ -224,14 +224,14 @@ const AdditionalProducts = () => {
                         />
                     </div>
                     <div className='flex gap-3 flex-wrap mt-4'>
-                        {form.images?.map((img, i) => (
+                        {form?.images?.map((img, i) => (
                             <div
                                 key={i}
                                 className='relative'
                             >
                                 <Image
-                                    src={img.url}
-                                    alt={img.name}
+                                    src={img?.url}
+                                    alt={img?.name}
                                     width={80}
                                     height={80}
                                     className='border rounded'
@@ -265,12 +265,12 @@ const AdditionalProducts = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                     {products.map((product) => (
                         <div
-                            key={product._id}
+                            key={product?._id}
                             className='bg-white shadow p-4 rounded space-y-2'
                         >
                             <div className='flex justify-between items-center gap-2'>
                                 <h2 className='font-semibold text-lg'>
-                                    {product.name}
+                                    {product?.name}
                                 </h2>
                                 <button
                                     onClick={() => handleEdit(product)}
@@ -286,7 +286,7 @@ const AdditionalProducts = () => {
                                 </button>
                             </div>
                             <p className='text-sm text-gray-600'>
-                                {product.category}
+                                {product?.category}
                             </p>
                             <div className='flex gap-2 flex-wrap'>
                                 {product.images?.map((img, i) => (

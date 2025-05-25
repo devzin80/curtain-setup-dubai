@@ -18,9 +18,11 @@ const OurProducts = () => {
 
     const fetchProducts = async () => {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/our-products`, 
         )
         const data = await res.json()
+        console.log(data);
+        
         setProducts(data)
     }
 
@@ -124,7 +126,7 @@ const OurProducts = () => {
                         type='text'
                         name='title'
                         className='w-full border p-2 rounded'
-                        value={form.title}
+                        value={form?.title}
                         onChange={handleChange}
                     />
                 </div>
@@ -135,7 +137,7 @@ const OurProducts = () => {
                         type='text'
                         name='description'
                         className='w-full border p-2 rounded'
-                        value={form.description}
+                        value={form?.description}
                         onChange={handleChange}
                     />
                 </div>
@@ -164,8 +166,8 @@ const OurProducts = () => {
                     {form.image && (
                         <div className='relative mt-4 w-max'>
                             <Image
-                                src={form.image.url}
-                                alt={form.image.name}
+                                src={form?.image?.url}
+                                alt={form?.image?.name}
                                 width={80}
                                 height={80}
                                 className='border rounded'
@@ -219,15 +221,15 @@ const OurProducts = () => {
                                 </div>
                             </div>
                             <p className='text-xl text-blue-700'>
-                                {product.title}
+                                {product?.title}
                             </p>
                             <p className='text-sm text-black'>
-                                {product.description}
+                                {product?.description}
                             </p>
                             {product.image?.url && (
                                 <Image
-                                    src={product.image.url}
-                                    alt={product.image.name}
+                                    src={product?.image?.url}
+                                    alt={product?.image?.name}
                                     width={300}
                                     height={300}
                                     className='object-cover rounded border'

@@ -2,6 +2,7 @@ import { Montserrat } from 'next/font/google'
 import './globals.css'
 import Header from './header'
 import Footer from './footer'
+export const dynamic = 'force-dynamic'
 
 const montserrat = Montserrat({
     subsets: ['latin'],
