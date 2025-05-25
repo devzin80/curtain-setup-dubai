@@ -116,7 +116,7 @@ const BestSellingProducts = () => {
         const method = form._id ? 'PATCH' : 'POST'
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products`,
+            `/api/best-selling-products`,
             {
                 method,
                 headers: { 'Content-Type': 'application/json' },
@@ -153,7 +153,7 @@ const BestSellingProducts = () => {
         if (!confirmed) return
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products?id=${id}`,
+            `/api/best-selling-products?id=${id}`,
             {
                 method: 'DELETE',
             },
@@ -192,7 +192,7 @@ const BestSellingProducts = () => {
                         type='text'
                         name='slug'
                         className='w-full border p-2 rounded bg-gray-100'
-                        value={form.slug}
+                        value={form?.slug}
                         readOnly
                     />
                 </div>
@@ -202,7 +202,7 @@ const BestSellingProducts = () => {
                     <select
                         name='category'
                         className='w-full border p-2 rounded'
-                        value={form.category || ''}
+                        value={form?.category || ''}
                         onChange={handleChange}
                     >
                         <option
@@ -222,7 +222,7 @@ const BestSellingProducts = () => {
                         name='description'
                         className='w-full border p-2 rounded'
                         rows={3}
-                        value={form.description || ''}
+                        value={form?.description || ''}
                         onChange={handleChange}
                     />
                 </div>
@@ -256,8 +256,8 @@ const BestSellingProducts = () => {
                                 className='relative'
                             >
                                 <Image
-                                    src={img.url}
-                                    alt={img.name}
+                                    src={img?.url}
+                                    alt={img?.name}
                                     width={80}
                                     height={80}
                                     className='border rounded'
@@ -289,7 +289,7 @@ const BestSellingProducts = () => {
                     Product List
                 </h1>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    {products.map((product) => (
+                    {products?.map((product) => (
                         <div
                             key={product._id}
                             className='bg-white shadow p-4 rounded space-y-2'

@@ -3,7 +3,8 @@
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
 
-export default function Uploader({ apiPath }) {
+export default function Uploader() {
+    const apiPath = `/api/banner-video`
     const [files, setFiles] = useState([])
     const [uploadId, setUploadId] = useState(null)
     const [videoUrl, setVideoUrl] = useState(null)

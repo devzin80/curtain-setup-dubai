@@ -8,14 +8,14 @@ const ContactUs = () => {
     const fetchData = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-us`,
+                `/api/contact-us`,
             )
-            if (!response.ok) throw new Error('Failed to fetch policy')
+            
             const data = await response.json()
 
             if (data.length > 0) {
-                setAddress(data[0].address || '')
-                setAddressId(data[0]._id || '')
+                setAddress(data[0].address )
+                setAddressId(data[0]._id )
             }
         } catch (error) {
             console.error('Error fetching privacy policy:', error)
@@ -30,20 +30,20 @@ const ContactUs = () => {
         e.preventDefault()
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-us`,
+            `/api/contact-us`,
         )
         const data = await res.json()
 
         if (data.length === 0) {
             // No content in DB – Create new
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-us`, {
+            await fetch(`/api/contact-us`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ address }),
             })
         } else {
             // Content exists – Update existing
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-us`, {
+            await fetch(`/api/contact-us`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: data[0]._id, address }),

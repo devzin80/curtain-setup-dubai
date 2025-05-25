@@ -16,26 +16,22 @@ const AdditionalProducts = () => {
     const [selectedFiles, setSelectedFiles] = useState([])
     const inputRef = useRef(null)
 
-    useEffect(() => {
-        fetchProducts()
-    }, [])
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const res = await fetch(
-                    '/api/best-selling-products?category=others',
-                )
-                if (!res.ok) {
-                    throw new Error('Failed to fetch')
-                }
-                const data = await res.json()
-                setProducts(data)
-            } catch (error) {
-                console.error('Fetch error:', error)
-                setProducts([]) // fallback to empty list
+    const fetchProducts = async () => {
+        try {
+            const res = await fetch(
+                '/api/best-selling-products?category=others',
+            )
+            if (!res.ok) {
+                throw new Error('Failed to fetch')
             }
+            const data = await res.json()
+            setProducts(data)
+        } catch (error) {
+            console.error('Fetch error:', error)
+            setProducts([]) // fallback to empty list
         }
-
+    }
+    useEffect(() => {
         fetchProducts()
     }, [])
 
@@ -113,7 +109,7 @@ const AdditionalProducts = () => {
         const method = form._id ? 'PATCH' : 'POST'
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products`,
+            `/api/best-selling-products`,
             {
                 method,
                 headers: { 'Content-Type': 'application/json' },
@@ -150,7 +146,7 @@ const AdditionalProducts = () => {
         if (!confirmed) return
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/best-selling-products?id=${id}`,
+            `/api/best-selling-products?id=${id}`,
             {
                 method: 'DELETE',
             },
