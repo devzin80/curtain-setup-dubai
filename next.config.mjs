@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
     experimental: {
         serverActions: {
             bodySizeLimit: '500mb', // Only keep this if you need large uploads
