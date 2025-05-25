@@ -16,8 +16,6 @@
 //     const address = await getAddress()
 //     const phoneNumber = await getNumber()
 //     const email = await getEmail()
-   
-    
 
 //     return (
 //         <div className='w-full text-black text-xl flex flex-col justify-center items-center shadow-[0_-3px_5px_-2px_rgba(0,0,0,0.1)] '>
@@ -153,8 +151,6 @@
 
 // export default Footer
 
-
-
 import Image from 'next/image'
 import React from 'react'
 import Link from 'next/link'
@@ -179,14 +175,16 @@ const Footer = async () => {
             <div className='max-w-[90vw] md:max-w-[80vw] mx-auto flex flex-col md:flex-row justify-center gap-16 py-10'>
                 {/* Brand Section */}
                 <div className='flex flex-col items-start gap-6 flex-shrink-0 w-full md:w-auto'>
-                    <Image
-                        src={logo.url || ''}
-                        alt={logo.name || ''}
-                        width={150}
-                        height={50}
-                        priority
-                        className='object-contain'
-                    />
+                    {logo.url && (
+                        <Image
+                            src={logo.url || ''}
+                            alt={logo.name || ''}
+                            width={150}
+                            height={50}
+                            priority
+                            className='object-contain'
+                        />
+                    )}
                     <p className='text-base md:text-lg font-bold'>
                         Follow us on
                     </p>
@@ -323,7 +321,3 @@ const Footer = async () => {
 }
 
 export default Footer
-
-
-
-

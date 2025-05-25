@@ -13,14 +13,16 @@ const Header = async () => {
 
                 <Link href={'/'}>
                     <div className='overflow-hidden w-[200px] h-[60px] flex justify-center items-center'>
-                        <Image
-                            src={logo.url || ''}
-                            alt='Website Logo'
-                            width={200}
-                            height={60}
-                            priority
-                            className='object-contain w-full h-full'
-                        />
+                        {logo?.url && (
+                            <Image
+                                src={logo.url}
+                                alt='Website Logo'
+                                width={200}
+                                height={60}
+                                priority
+                                className='object-contain w-full h-full'
+                            />
+                        )}
                     </div>
                 </Link>
 
