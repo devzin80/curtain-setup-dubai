@@ -202,7 +202,7 @@ const Footer = async () => {
                 <nav className='flex flex-col sm:flex-row gap-10 text-base md:text-lg font-semibold w-full md:w-auto justify-start'>
                     <div className='flex flex-col gap-3'>
                         <Link
-                            href='/products'
+                            href='/our-products'
                             className='hover:text-blue-600'
                         >
                             Our Products
