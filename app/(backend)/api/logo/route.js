@@ -2,7 +2,7 @@ import { writeFile, unlink } from 'fs/promises'
 import path from 'path'
 import fs from 'fs'
 import connectDB from '@/lib/db'
-import Logo from '@/app/(backend)/models/logo.model'
+import Logo from '../../models/logo.model'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
@@ -28,12 +28,13 @@ export async function POST(req) {
         for (const file of filesToProcess) {
             const bytes = await file.arrayBuffer()
             const buffer = Buffer.from(bytes)
-            const { name: filename, ext } = path.parse(file.name)
-            const fileSaveName = `${filename}${ext}`
-            const filepath = path.join(logoDir, fileSaveName)
+            const ext = file.name.split('.').pop()
+            const filename = file.name.split('.')[0]
+            const filepath = path.join(logoDir, file.name)
 
             await writeFile(filepath, buffer)
-            const fileUrl = `/logo/${fileSaveName}`
+
+            const fileUrl = `/logo/${filename}.${ext}`
 
             uploadedFiles.push({ filename, url: fileUrl })
         }
@@ -96,12 +97,12 @@ export async function PATCH(req) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
         const { name: filename, ext } = path.parse(file.name)
-        const fileSaveName = `${filename}${ext}`
+        
         const newFilePath = path.join(
             process.cwd(),
             'public',
             'logo',
-            fileSaveName,
+            `${filename}${ext}`,
         )
 
         const logoDir = path.join(process.cwd(), 'public', 'logo')
@@ -111,7 +112,7 @@ export async function PATCH(req) {
 
         await writeFile(newFilePath, buffer)
 
-        const newUrl = `/logo/${fileSaveName}`
+        const newUrl = `/logo/${filename}${ext}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()

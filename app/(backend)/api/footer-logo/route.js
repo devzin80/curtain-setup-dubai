@@ -36,6 +36,7 @@ export async function POST(req) {
             await writeFile(filepath, buffer)
 
             const fileUrl = `/logo/${filename}.${ext}`
+            
             uploadedFiles.push({ filename, url: fileUrl })
         }
 

@@ -1,11 +1,13 @@
 import Image from 'next/image'
 import React from 'react'
 import Link from 'next/link'
-import { getLogo } from '@/lib/actions/dataFetch'
+
 import MobileNav from './(Components)/mobileNav'
+import { getLogo } from '@/lib/actions/dataFetch'
 
 const Header = async () => {
     const logo = await getLogo()
+    // console.log('Logo:', logo);
     return (
         <header className='sticky top-0 w-full h-[12vh] bg-white text-black text-xl flex justify-center items-center shadow z-20'>
             <div className='w-11/12 max-w-7xl mx-auto h-full flex justify-between items-center'>

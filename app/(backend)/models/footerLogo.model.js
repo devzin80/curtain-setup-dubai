@@ -10,6 +10,5 @@ const logoSchema = new mongoose.Schema({
     },
 });
 
-const FooterLogo =
-    mongoose.models.FooterLogo || mongoose.model('FooterLogo', logoSchema)
+const FooterLogo = mongoose.models.FooterLogo || mongoose.model('FooterLogo', logoSchema)
 export default FooterLogo
