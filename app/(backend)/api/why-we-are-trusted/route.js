@@ -28,97 +28,117 @@ const handleUpload = async (formData) => {
     return uploaded
 }
 
-// GET all social media entries
+// GET all entries
 export async function GET() {
     await connectDB()
-    const contents = await WhyUs.find().lean()
-    return NextResponse.json(contents)
+    try {
+        const contents = await WhyUs.find().lean()
+        return NextResponse.json(contents)
+    } catch (error) {
+        return NextResponse.json(
+            { message: 'Server error', error: error.message },
+            { status: 500 },
+        )
+    }
 }
 
-// POST: Create new social media
+// POST: Create new entry (handles both JSON and multipart/form-data)
 export async function POST(req) {
     await connectDB()
-    const contentType = req.headers.get('content-type')
+    try {
+        const contentType = req.headers.get('content-type')
 
-    if (contentType?.includes('multipart/form-data')) {
-        const formData = await req.formData()
-        const title = formData.get('title')
-        const description = formData.get('description')
-        const button = formData.get('button')
-        const image = await handleUpload(formData)
-        const newContent = await WhyUs.create({
-            title,
-            description,
-            button,
-            image: image.length ? image[0] : null,
-        })
-
-        return NextResponse.json(newContent, { status: 201 })
-    } else {
-        const body = await req.json()
-        const newContent = await WhyUs.create(body)
-        return NextResponse.json(newContent, { status: 201 })
+        if (contentType?.includes('multipart/form-data')) {
+            const formData = await req.formData()
+            const title = formData.get('title')
+            const description = formData.get('description')
+            const button = formData.get('button')
+            const image = await handleUpload(formData)
+            const newContent = await WhyUs.create({
+                title,
+                description,
+                button,
+                image: image.length ? image[0] : null,
+            })
+            return NextResponse.json(newContent, { status: 201 })
+        } else {
+            const body = await req.json()
+            const newContent = await WhyUs.create(body)
+            return NextResponse.json(newContent, { status: 201 })
+        }
+    } catch (error) {
+        return NextResponse.json(
+            { message: 'Server error', error: error.message },
+            { status: 500 },
+        )
     }
 }
 
-// PATCH: Update social media entry
+// PATCH: Update entry, including optional image replacement
 export async function PATCH(req) {
     await connectDB()
-    const { _id, title, description, image, button } = await req.json()
+    try {
+        const { _id, title, description, image, button } = await req.json()
 
-    const existingContent = await WhyUs.findById(_id)
-    if (!existingContent) {
-        return NextResponse.json({ error: 'Item not found' }, { status: 404 })
-    }
-
-    // Handle image update if changed
-    let updatedImage = existingContent.image
-
-    if (image?.url?.startsWith('data:image')) {
-        // Delete old image if exists
-        if (existingContent.image?.url) {
-            const oldPath = path.join(
-                process.cwd(),
-                'public',
-                existingContent.image.url, // <--- FIXED
+        const existingContent = await WhyUs.findById(_id)
+        if (!existingContent) {
+            return NextResponse.json(
+                { error: 'Item not found' },
+                { status: 404 },
             )
-            try {
-                await fs.unlink(oldPath)
-            } catch (err) {
-                console.warn('Old image not found or already deleted.')
+        }
+
+        let updatedImage = existingContent.image
+
+        if (image?.url?.startsWith('data:image')) {
+            // Delete old image if exists
+            if (existingContent.image?.url) {
+                const oldPath = path.join(
+                    process.cwd(),
+                    'public',
+                    existingContent.image.url,
+                )
+                try {
+                    await fs.unlink(oldPath)
+                } catch {
+                    console.warn('Old image not found or already deleted.')
+                }
+            }
+
+            // Save new image to disk
+            const ext = image.name.split('.').pop() || 'png'
+            const base64Data = image.url.split(',')[1]
+            const buffer = Buffer.from(base64Data, 'base64')
+            const filename = `${uuidv4()}.${ext}`
+            const filePath = path.join(uploadDir, filename)
+            await fs.mkdir(uploadDir, { recursive: true })
+            await fs.writeFile(filePath, buffer)
+
+            updatedImage = {
+                name: image.name,
+                url: `/uploads/${filename}`,
             }
         }
 
-        // Save new image to disk
-        const ext = image.name.split('.')[1]
+        const updated = await WhyUs.findByIdAndUpdate(
+            _id,
+            { title, description, image: updatedImage, button },
+            { new: true },
+        )
 
-        const base64Data = image.url.split(',')[1]
-        const buffer = Buffer.from(base64Data, 'base64')
-        const filename = `${uuidv4()}.${ext}`
-        const uploadDir = path.join(process.cwd(), 'public/uploads')
-        await fs.mkdir(uploadDir, { recursive: true })
-        const filePath = path.join(uploadDir, filename)
-        await fs.writeFile(filePath, buffer)
-
-        updatedImage = {
-            name: image.name,
-            url: `/uploads/${filename}`,
-        }
+        return NextResponse.json(updated, { status: 200 })
+    } catch (error) {
+        return NextResponse.json(
+            { message: 'Server error', error: error.message },
+            { status: 500 },
+        )
     }
-
-    const updated = await WhyUs.findByIdAndUpdate(
-        _id,
-        { title, description, image: updatedImage, button },
-        { new: true },
-    )
-
-    return NextResponse.json(updated, { status: 200 })
 }
 
-// DELETE: Delete social media and associated image
+// DELETE: Delete entry and associated image
 export async function DELETE(req) {
+    await connectDB()
     try {
-        await connectDB()
         const { searchParams } = new URL(req.url)
         const id = searchParams.get('id')
 
@@ -129,23 +149,23 @@ export async function DELETE(req) {
             )
         }
 
-        const Contents = await WhyUs.findById(id)
-        if (!Contents) {
+        const content = await WhyUs.findById(id)
+        if (!content) {
             return NextResponse.json(
                 { error: 'Item not found' },
                 { status: 404 },
             )
         }
 
-        if (Contents.image?.url) {
+        if (content.image?.url) {
             const filePath = path.join(
                 process.cwd(),
                 'public',
-                Contents.image.url, // <--- FIXED
+                content.image.url,
             )
             try {
                 await unlink(filePath)
-            } catch (err) {
+            } catch {
                 console.warn(`Image already deleted or missing: ${filePath}`)
             }
         }
@@ -157,9 +177,9 @@ export async function DELETE(req) {
             { status: 200 },
         )
     } catch (error) {
-        console.error('Error deleting social media:', error)
+        console.error('Error deleting entry:', error)
         return NextResponse.json(
-            { message: 'Error deleting item' },
+            { message: 'Error deleting item', error: error.message },
             { status: 500 },
         )
     }

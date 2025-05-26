@@ -30,85 +30,119 @@ const handleUpload = async (formData) => {
 
 // GET all social media entries
 export async function GET() {
-    await connectDB()
-    const ourProducts = await BestSeller.find().lean()
-    return NextResponse.json(ourProducts)
+    try {
+        await connectDB()
+        const ourProducts = await BestSeller.find().lean()
+        return NextResponse.json(ourProducts)
+    } catch (error) {
+        console.error('GET error:', error)
+        return NextResponse.json(
+            { error: 'Failed to fetch items' },
+            { status: 500 },
+        )
+    }
 }
 
 // POST: Create new social media
 export async function POST(req) {
-    await connectDB()
-    const contentType = req.headers.get('content-type')
+    try {
+        await connectDB()
+        const contentType = req.headers.get('content-type')
 
-    if (contentType?.includes('multipart/form-data')) {
-        const formData = await req.formData()
-        const title = formData.get('title')
-        const description = formData.get('description')
-        const image = await handleUpload(formData)
-        const newProduct = await BestSeller.create({
-            title,
-            description,
-            image: image.length ? image[0] : null,
-        })
+        if (contentType?.includes('multipart/form-data')) {
+            const formData = await req.formData()
+            const title = formData.get('title')
+            const description = formData.get('description')
+            const image = await handleUpload(formData)
+            const newProduct = await BestSeller.create({
+                title,
+                description,
+                image: image.length ? image[0] : null,
+            })
 
-        return NextResponse.json(newProduct, { status: 201 })
-    } else {
-        const body = await req.json()
-        const newProduct = await BestSeller.create(body)
-        return NextResponse.json(newProduct, { status: 201 })
+            return NextResponse.json(newProduct, { status: 201 })
+        } else {
+            const body = await req.json()
+            const newProduct = await BestSeller.create(body)
+            return NextResponse.json(newProduct, { status: 201 })
+        }
+    } catch (error) {
+        console.error('POST error:', error)
+        return NextResponse.json(
+            { error: 'Failed to create item' },
+            { status: 500 },
+        )
     }
 }
 
 // PATCH: Update social media entry
 export async function PATCH(req) {
-    await connectDB()
-    const { _id, title, description, image } = await req.json()
+    try {
+        await connectDB()
+        const { _id, title, description, image } = await req.json()
 
-    const existingProduct = await BestSeller.findById(_id)
-    if (!existingProduct) {
-        return NextResponse.json({ error: 'Item not found' }, { status: 404 })
-    }
-
-    // Handle image update if changed
-    let updatedImage = existingProduct.image
-
-    if (image?.url?.startsWith('data:image')) {
-        // Delete old image if exists
-        if (existingProduct.image?.url) {
-            const oldPath = path.join(
-                process.cwd(),
-                'public',
-                existingProduct.image.url, // <--- FIXED
+        if (!_id) {
+            return NextResponse.json(
+                { error: '_id is required' },
+                { status: 400 },
             )
-            try {
-                await fs.unlink(oldPath)
-            } catch (err) {
-                console.warn('Old image not found or already deleted.')
+        }
+
+        const existingProduct = await BestSeller.findById(_id)
+        if (!existingProduct) {
+            return NextResponse.json(
+                { error: 'Item not found' },
+                { status: 404 },
+            )
+        }
+
+        // Handle image update if changed
+        let updatedImage = existingProduct.image
+
+        if (image?.url?.startsWith('data:image')) {
+            // Delete old image if exists
+            if (existingProduct.image?.url) {
+                const oldPath = path.join(
+                    process.cwd(),
+                    'public',
+                    existingProduct.image.url,
+                )
+                try {
+                    await fs.unlink(oldPath)
+                } catch {
+                    console.warn('Old image not found or already deleted.')
+                }
+            }
+
+            // Save new image to disk
+            const ext = image.name.split('.').pop()
+            const base64Data = image.url.split(',')[1]
+            const buffer = Buffer.from(base64Data, 'base64')
+            const filename = `${uuidv4()}.${ext}`
+            await fs.mkdir(uploadDir, { recursive: true })
+            const filePath = path.join(uploadDir, filename)
+            await fs.writeFile(filePath, buffer)
+
+            updatedImage = {
+                name: image.name,
+                url: `/uploads/${filename}`,
             }
         }
 
-        // Save new image to disk
-        const ext = image.name.split('.').pop()
-        const base64Data = image.url.split(',')[1]
-        const buffer = Buffer.from(base64Data, 'base64')
-        const filename = `${uuidv4()}.${ext}`
-        await fs.mkdir(uploadDir, { recursive: true })
-        const filePath = path.join(uploadDir, filename)
-        await fs.writeFile(filePath, buffer)
+        const updated = await BestSeller.findByIdAndUpdate(
+            _id,
+            { title, description, image: updatedImage },
+            { new: true },
+        )
 
-        updatedImage = {
-            name: image.name,
-            url: `/uploads/${filename}`,
-        }
+        return NextResponse.json(updated, { status: 200 })
+    } catch (error) {
+        console.error('PATCH error:', error)
+        return NextResponse.json(
+            { error: 'Failed to update item' },
+            { status: 500 },
+        )
     }
-
-    const updated = await BestSeller.findByIdAndUpdate(
-        _id,
-        { title, description, image: updatedImage },
-        { new: true },
-    )
-
-    return NextResponse.json(updated, { status: 200 })
 }
 
 // DELETE: Delete social media and associated image
@@ -141,7 +175,7 @@ export async function DELETE(req) {
             )
             try {
                 await unlink(filePath)
-            } catch (err) {
+            } catch {
                 console.warn(`Image already deleted or missing: ${filePath}`)
             }
         }
@@ -153,9 +187,9 @@ export async function DELETE(req) {
             { status: 200 },
         )
     } catch (error) {
-        console.error('Error deleting social media:', error)
+        console.error('DELETE error:', error)
         return NextResponse.json(
-            { message: 'Error deleting item' },
+            { error: 'Failed to delete item' },
             { status: 500 },
         )
     }

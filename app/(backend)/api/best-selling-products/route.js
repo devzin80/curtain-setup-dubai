@@ -29,99 +29,134 @@ const handleUpload = async (formData) => {
 
 // ✅ GET: Fetch all or filtered by category
 export async function GET(req) {
-    await connectDB()
-    const { searchParams } = new URL(req.url)
-    const category = searchParams.get('category')
+    try {
+        await connectDB()
+        const { searchParams } = new URL(req.url)
+        const category = searchParams.get('category')
 
-    const products = category
-        ? await Product.find({ category })
-        : await Product.find()
+        const products = category
+            ? await Product.find({ category })
+            : await Product.find()
 
-    return NextResponse.json(products)
+        return NextResponse.json(products)
+    } catch (err) {
+        return NextResponse.json(
+            { error: err.message || 'Failed to fetch products' },
+            { status: 500 },
+        )
+    }
 }
 
 // ✅ POST: Create product
 export async function POST(req) {
-    await connectDB()
-    const contentType = req.headers.get('content-type')
+    try {
+        await connectDB()
+        const contentType = req.headers.get('content-type')
 
-    if (contentType?.includes('multipart/form-data')) {
-        const formData = await req.formData()
-        const name = formData.get('name')
-        const slug = formData.get('slug')
-        const category = formData.get('category')
-        const description = formData.get('description')
+        if (contentType?.includes('multipart/form-data')) {
+            const formData = await req.formData()
+            const name = formData.get('name')
+            const slug = formData.get('slug')
+            const category = formData.get('category')
+            const description = formData.get('description')
 
-        const images = await handleUpload(formData)
+            const images = await handleUpload(formData)
 
-        const product = await Product.create({
-            name,
-            slug,
-            category,
-            description,
-            images,
-        })
+            const product = await Product.create({
+                name,
+                slug,
+                category,
+                description,
+                images,
+            })
 
-        return NextResponse.json(product, { status: 201 })
-    } else {
-        const body = await req.json()
-        const product = await Product.create(body)
-        return NextResponse.json(product, { status: 201 })
+            return NextResponse.json(product, { status: 201 })
+        } else {
+            const body = await req.json()
+            const product = await Product.create(body)
+            return NextResponse.json(product, { status: 201 })
+        }
+    } catch (err) {
+        return NextResponse.json(
+            { error: err.message || 'Failed to create product' },
+            { status: 500 },
+        )
     }
 }
 
 // ✅ PATCH: Update product
 export async function PATCH(req) {
-    await connectDB()
-    const body = await req.json()
-    const { _id, ...updateData } = body
+    try {
+        await connectDB()
+        const body = await req.json()
+        const { _id, ...updateData } = body
 
-    const updatedProduct = await Product.findByIdAndUpdate(_id, updateData, {
-        new: true,
-    })
+        const updatedProduct = await Product.findByIdAndUpdate(
+            _id,
+            updateData,
+            {
+                new: true,
+            },
+        )
 
-    if (!updatedProduct) {
+        if (!updatedProduct) {
+            return NextResponse.json(
+                { error: 'Product not found' },
+                { status: 404 },
+            )
+        }
+
+        return NextResponse.json(updatedProduct)
+    } catch (err) {
         return NextResponse.json(
-            { error: 'Product not found' },
-            { status: 404 },
+            { error: err.message || 'Failed to update product' },
+            { status: 500 },
         )
     }
-
-    return NextResponse.json(updatedProduct)
 }
 
 // ✅ DELETE: Remove product and images
 export async function DELETE(req) {
-    await connectDB()
-    const { searchParams } = new URL(req.url)
-    const id = searchParams.get('id')
+    try {
+        await connectDB()
+        const { searchParams } = new URL(req.url)
+        const id = searchParams.get('id')
 
-    if (!id) {
-        return NextResponse.json({ error: 'ID is required' }, { status: 400 })
-    }
+        if (!id) {
+            return NextResponse.json(
+                { error: 'ID is required' },
+                { status: 400 },
+            )
+        }
 
-    const product = await Product.findById(id)
-    if (!product) {
+        const product = await Product.findById(id)
+        if (!product) {
+            return NextResponse.json(
+                { error: 'Product not found' },
+                { status: 404 },
+            )
+        }
+
+        // Delete image files
+        for (const img of product.images || []) {
+            const filePath = path.join(process.cwd(), 'public', img.url)
+            try {
+                await unlink(filePath)
+            } catch (err) {
+                console.warn(`Image already deleted or missing: ${filePath}`)
+            }
+        }
+
+        await Product.findByIdAndDelete(id)
+
         return NextResponse.json(
-            { error: 'Product not found' },
-            { status: 404 },
+            { message: 'Product deleted successfully' },
+            { status: 200 },
+        )
+    } catch (err) {
+        return NextResponse.json(
+            { error: err.message || 'Failed to delete product' },
+            { status: 500 },
         )
     }
-
-    // Delete image files
-    for (const img of product.images || []) {
-        const filePath = path.join(process.cwd(), 'public', img.url)
-        try {
-            await unlink(filePath)
-        } catch (err) {
-            console.warn(`Image already deleted: ${filePath}`)
-        }
-    }
-
-    await Product.findByIdAndDelete(id)
-
-    return NextResponse.json(
-        { message: 'Product deleted successfully' },
-        { status: 200 },
-    )
 }

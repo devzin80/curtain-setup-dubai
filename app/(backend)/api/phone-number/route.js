@@ -8,7 +8,7 @@ export async function POST(req) {
         const body = await req.json()
         if (!body.phoneNumber) {
             return NextResponse.json(
-                { message: 'Phone number is required' },
+                { error: 'Phone number is required' },
                 { status: 400 },
             )
         }
@@ -17,14 +17,17 @@ export async function POST(req) {
         })
         if (!phoneNumber) {
             return NextResponse.json(
-                { message: 'Error creating post' },
+                { error: 'Error creating phone number' },
                 { status: 500 },
             )
         }
-        return NextResponse.json({ message: 'Created' }, { status: 201 })
+        return NextResponse.json(
+            { message: 'Created', phoneNumber },
+            { status: 201 },
+        )
     } catch (error) {
         return NextResponse.json(
-            { message: 'Server error', error: error.message },
+            { error: 'Server error', details: error.message },
             { status: 500 },
         )
     }
@@ -33,11 +36,11 @@ export async function POST(req) {
 export async function GET() {
     await connectDB()
     try {
-        const phoneNumber = await Phone.find({}).lean()
-        return NextResponse.json(phoneNumber)
+        const phoneNumbers = await Phone.find({}).lean()
+        return NextResponse.json(phoneNumbers)
     } catch (error) {
         return NextResponse.json(
-            { message: 'Server error', error: error.message },
+            { error: 'Server error', details: error.message },
             { status: 500 },
         )
     }
@@ -49,7 +52,7 @@ export async function PUT(req) {
         const { id, phoneNumber } = await req.json()
         if (!id || !phoneNumber) {
             return NextResponse.json(
-                { message: 'ID and phone number are required' },
+                { error: 'ID and phone number are required' },
                 { status: 400 },
             )
         }
@@ -60,7 +63,7 @@ export async function PUT(req) {
         )
         if (!updatedNumber) {
             return NextResponse.json(
-                { message: 'Phone number not found' },
+                { error: 'Phone number not found' },
                 { status: 404 },
             )
         }
@@ -71,7 +74,7 @@ export async function PUT(req) {
     } catch (error) {
         console.error('Error updating phone number:', error)
         return NextResponse.json(
-            { message: 'Error updating phone number', error: error.message },
+            { error: 'Error updating phone number', details: error.message },
             { status: 500 },
         )
     }

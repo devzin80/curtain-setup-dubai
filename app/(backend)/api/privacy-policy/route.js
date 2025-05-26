@@ -8,21 +8,24 @@ export async function POST(req) {
         const body = await req.json()
         if (!body.content) {
             return NextResponse.json(
-                { message: 'Content is required' },
+                { error: 'Content is required' },
                 { status: 400 },
             )
         }
         const newPost = await Privacy.create({ content: body.content })
         if (!newPost) {
             return NextResponse.json(
-                { message: 'Error creating post' },
+                { error: 'Error creating post' },
                 { status: 500 },
             )
         }
-        return NextResponse.json({ message: 'Created' }, { status: 201 })
+        return NextResponse.json(
+            { message: 'Created', post: newPost },
+            { status: 201 },
+        )
     } catch (error) {
         return NextResponse.json(
-            { message: 'Server error', error: error.message },
+            { error: 'Server error', details: error.message },
             { status: 500 },
         )
     }
@@ -35,7 +38,7 @@ export async function GET() {
         return NextResponse.json(privacy)
     } catch (error) {
         return NextResponse.json(
-            { message: 'Server error', error: error.message },
+            { error: 'Server error', details: error.message },
             { status: 500 },
         )
     }
@@ -47,15 +50,28 @@ export async function PUT(req) {
         const { id, content } = await req.json()
         if (!id || !content) {
             return NextResponse.json(
-                { message: 'ID and content are required' },
+                { error: 'ID and content are required' },
                 { status: 400 },
             )
         }
-        await Privacy.findByIdAndUpdate(id, { content })
-        return NextResponse.json({ message: 'Updated' }, { status: 200 })
+        const updated = await Privacy.findByIdAndUpdate(
+            id,
+            { content },
+            { new: true },
+        )
+        if (!updated) {
+            return NextResponse.json(
+                { error: 'Privacy post not found' },
+                { status: 404 },
+            )
+        }
+        return NextResponse.json(
+            { message: 'Updated', post: updated },
+            { status: 200 },
+        )
     } catch (error) {
         return NextResponse.json(
-            { message: 'Server error', error: error.message },
+            { error: 'Server error', details: error.message },
             { status: 500 },
         )
     }

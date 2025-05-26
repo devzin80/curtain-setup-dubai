@@ -128,7 +128,7 @@ export async function POST(req) {
 export async function PATCH(req) {
     await connectDB()
     const body = await req.json()
-    console.log(body)
+    // console.log(body)
 
     const { id, name, hasVariants, price, factor, variants } = body
 
