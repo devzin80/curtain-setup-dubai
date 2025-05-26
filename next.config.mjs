@@ -10,7 +10,7 @@ const nextConfig = {
     // images: {
     //     domains: ['your-image-domain.com'],
     // },
-    output: 'standalone', // Recommended for VPS/Docker/Node hosting
+    //output: 'standalone', // Recommended for VPS/Docker/Node hosting
 }
 
 export default nextConfig
