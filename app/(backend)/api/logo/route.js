@@ -58,7 +58,7 @@ export async function GET() {
         const logos = await Logo.find({}).lean()
         return NextResponse.json({ logos }, { status: 200 })
     } catch (error) {
-        console.error('GET error:', error)
+        // console.error('GET error:', error)
         return NextResponse.json({ error: 'Server error' }, { status: 500 })
     }
 }

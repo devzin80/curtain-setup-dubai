@@ -59,7 +59,7 @@ export async function GET() {
         const logos = await FooterLogo.find({}).lean()
         return NextResponse.json(logos, { status: 200 })
     } catch (error) {
-        console.error('Fetch error:', error)
+        // console.error('Fetch error:', error)
         return NextResponse.json({ error: 'Server error' }, { status: 500 })
     }
 }

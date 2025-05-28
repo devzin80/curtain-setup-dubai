@@ -27,7 +27,7 @@ const AdditionalProducts = () => {
             const data = await res.json()
             setProducts(data)
         } catch (error) {
-            console.error('Fetch error:', error)
+            // console.error('Fetch error:', error)
             setProducts([]) // fallback to empty list
         }
     }

@@ -35,7 +35,7 @@ export async function GET() {
         const ourProducts = await BestSeller.find().lean()
         return NextResponse.json(ourProducts)
     } catch (error) {
-        console.error('GET error:', error)
+        // console.error('GET error:', error)
         return NextResponse.json(
             { error: 'Failed to fetch items' },
             { status: 500 },
