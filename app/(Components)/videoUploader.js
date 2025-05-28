@@ -133,10 +133,27 @@ export default function Uploader() {
         return (
             <div className='w-full max-w-5xl flex flex-col items-center justify-center space-y-4'>
                 <video
-                    src={videoUrl}
+                    autoPlay
+                    muted
+                    loop
                     controls
                     className='w-full h-full object-cover rounded'
-                />
+                >
+                    <source
+                        src={videoUrl}
+                        type='video/mp4'
+                    />
+                    <source
+                        src={videoUrl}
+                        type='video/webm'
+                    />
+                    <source
+                        src={videoUrl}
+                        type='video/ogg'
+                    />
+                    Your browser does not support the video tag.
+                </video>
+
                 <button
                     className='cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded'
                     onClick={() => setShowUploader(true)}

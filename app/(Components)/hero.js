@@ -10,14 +10,24 @@ const Hero = async () => {
         <div className='w-auto max-h-[680px] relative overflow-hidden'>
             {video?.url && (
                 <video
-                    className='h-full w-full object-cover overflow-hidden'
                     autoPlay
                     muted
                     loop
-                    playsInline
-                    src={video.url}
-                    type='video/mp4,video/webm,video/ogg'
+                    controls
+                    className='w-full h-full object-cover rounded'
                 >
+                    <source
+                        src={video.url}
+                        type='video/mp4'
+                    />
+                    <source
+                        src={video.url}
+                        type='video/webm'
+                    />
+                    <source
+                        src={video.url}
+                        type='video/ogg'
+                    />
                     Your browser does not support the video tag.
                 </video>
             )}
