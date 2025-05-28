@@ -78,6 +78,13 @@ const sidebar = [
     },
     {
         name: 'SEO',
+        Children: [
+            {
+                name: 'SEO',
+                link: '/sordar/seo',
+            },
+            
+        ],
         // added link to SEO
     },
 ]

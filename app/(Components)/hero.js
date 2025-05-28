@@ -3,6 +3,8 @@ import React from 'react'
 
 const Hero = async () => {
     const video = await bannerVideo()
+    console.log('Banner Video:', video);
+    
 
     return (
         <div className='w-auto max-h-[680px] relative overflow-hidden'>
