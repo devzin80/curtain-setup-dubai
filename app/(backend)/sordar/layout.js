@@ -8,7 +8,7 @@ const montserrat = Montserrat({
 })
 export default function RootLayout({ children }) {
     return (
-        <div className='flex  bg-gray-50 text-gray-900 '>
+        <div className='flex  bg-gray-50 text-gray-900 min-h-screen'>
             <div className='hidden md:block'>
                 <AdminSidebar />
             </div>
