@@ -18,6 +18,7 @@ const Header = async () => {
                         {logo?.url ? (
                             <Image
                                 src={logo.url}
+                                overrideSrc={logo.url}
                                 alt='Website Logo'
                                 width={200}
                                 height={60}

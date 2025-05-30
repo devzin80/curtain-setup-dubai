@@ -363,6 +363,7 @@ export default function Uploader({ apiPath = '/api/logo' }) {
             <div className='flex flex-col items-center justify-center space-y-4'>
                 <Image
                     src={logoUrl}
+                    overrideSrc={logoUrl}
                     alt='Uploaded Logo'
                     width={600}
                     height={600}
@@ -406,6 +407,7 @@ export default function Uploader({ apiPath = '/api/logo' }) {
                             >
                                 <Image
                                     src={fileObj.preview}
+                                    overrideSrc={fileObj.preview}
                                     width={600}
                                     height={600}
                                     alt='file preview'
