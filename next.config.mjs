@@ -9,12 +9,7 @@ const nextConfig = {
     images: {
         disableStaticImages: true,
         unoptimized: true,
-        localPatterns: [
-            {
-                pathname: '/uploads/**',
-                
-            },
-        ], // Disable Next.js image optimization
+       // Disable Next.js image optimization
         remotePatterns: [
             {
                 protocol: 'https',
