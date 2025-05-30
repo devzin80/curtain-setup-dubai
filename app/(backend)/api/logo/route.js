@@ -18,7 +18,7 @@ export async function POST(req) {
             )
         }
 
-        const logoDir = path.join(process.cwd(), 'public', 'logo')
+        const logoDir = path.join(process.cwd(), 'uploads', 'logo')
         if (!fs.existsSync(logoDir)) {
             fs.mkdirSync(logoDir, { recursive: true })
         }
@@ -34,7 +34,7 @@ export async function POST(req) {
 
             await writeFile(filepath, buffer)
 
-            const fileUrl = `/logo/${filename}.${ext}`
+            const fileUrl = `/uploads/logo/${filename}.${ext}`
 
             uploadedFiles.push({ filename, url: fileUrl })
         }
@@ -87,7 +87,7 @@ export async function PATCH(req) {
 
         const oldFilePath = path.join(
             process.cwd(),
-            'public',
+            'uploads',
             existingLogo.url || '',
         )
         if (fs.existsSync(oldFilePath)) {
@@ -112,7 +112,7 @@ export async function PATCH(req) {
 
         await writeFile(newFilePath, buffer)
 
-        const newUrl = `/logo/${filename}${ext}`
+        const newUrl = `/uploads/logo/${filename}${ext}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()

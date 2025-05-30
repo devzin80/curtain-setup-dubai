@@ -355,8 +355,8 @@ export default function Uploader({ apiPath = '/api/logo' }) {
         setFiles((prev) => prev.filter((f) => f.preview !== preview))
     }
 
-    console.log('Current logo URL:', logoUrl);
-    console.log('Show uploader:', showUploader);
+    // console.log('Current logo URL:', logoUrl);
+    // console.log('Show uploader:', showUploader);
     
     if (!showUploader && logoUrl) {
         return (

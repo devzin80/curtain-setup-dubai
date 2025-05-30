@@ -21,16 +21,14 @@ const AdditionalProducts = () => {
             const res = await fetch(
                 '/api/best-selling-products?category=others',
             )
-            if (!res.ok) {
-                throw new Error('Failed to fetch')
-            }
+            if (!res.ok) throw new Error('Failed to fetch')
             const data = await res.json()
             setProducts(data)
-        } catch (error) {
-            // console.error('Fetch error:', error)
-            setProducts([]) // fallback to empty list
+        } catch {
+            setProducts([])
         }
     }
+
     useEffect(() => {
         fetchProducts()
     }, [])
@@ -47,8 +45,6 @@ const AdditionalProducts = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-
-        // Auto-generate slug when "name" field changes
         if (name === 'name') {
             setForm((prev) => ({
                 ...prev,
@@ -63,9 +59,8 @@ const AdditionalProducts = () => {
         }
     }
 
-    const openFilePicker = () => {
-        inputRef.current.click()
-    }
+    const openFilePicker = () => inputRef.current.click()
+
     const handleFileInput = async (files) => {
         const fileList = Array.from(files)
         setSelectedFiles((prev) => [...prev, ...fileList])
@@ -108,7 +103,6 @@ const AdditionalProducts = () => {
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
 
-        // Use FormData for file uploads
         const formData = new FormData()
         formData.append('name', form.name)
         formData.append('slug', form.slug)
@@ -141,7 +135,7 @@ const AdditionalProducts = () => {
 
     const handleEdit = (product) => {
         setForm(product)
-        setSelectedFiles([]) // Reset file input
+        setSelectedFiles([])
         showToast('Edit mode enabled')
     }
 
@@ -162,14 +156,15 @@ const AdditionalProducts = () => {
             showToast('Failed to delete product', 'error')
         }
     }
+
     return (
-        <div className='w-[30vw] mx-auto p-6'>
+        <div className='max-w-4xl mx-auto px-4 py-6'>
             <h1 className='text-2xl font-bold mb-6 text-center'>
                 Best Selling Products
             </h1>
 
             {/* FORM */}
-            <div className=' bg-white shadow shadow-sky-600 rounded p-4 space-y-4 mb-10'>
+            <div className='bg-white shadow shadow-sky-600 rounded p-4 space-y-4 mb-10'>
                 <div>
                     <label className='block font-medium'>Name</label>
                     <input
@@ -234,7 +229,7 @@ const AdditionalProducts = () => {
                         />
                     </div>
                     <div className='flex gap-3 flex-wrap mt-4'>
-                        {form?.images?.map((img) => (
+                        {form?.images?.map((img, i) => (
                             <div
                                 key={img.url || img.name}
                                 className='relative'
@@ -257,7 +252,6 @@ const AdditionalProducts = () => {
                         ))}
                     </div>
                 </div>
-                {/* <Uploader apiPath={'/api/best-selling-products'} /> */}
 
                 <button
                     onClick={handleSubmit}
@@ -268,20 +262,20 @@ const AdditionalProducts = () => {
             </div>
 
             {/* PRODUCT LIST */}
-            <div>
-                <h1 className='text-3xl font-bold text-center m-10'>
-                    Product List
-                </h1>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    {products.map((product) => (
-                        <div
-                            key={product?._id}
-                            className='bg-white shadow p-4 rounded space-y-2'
-                        >
-                            <div className='flex justify-between items-center gap-2'>
-                                <h2 className='font-semibold text-lg'>
-                                    {product?.name}
-                                </h2>
+            <h2 className='text-2xl font-semibold text-center mb-6'>
+                Product List
+            </h2>
+            <div className='grid gap-6 sm:grid-cols-1 md:grid-cols-2'>
+                {products.map((product) => (
+                    <div
+                        key={product?._id}
+                        className='bg-white shadow p-4 rounded space-y-2'
+                    >
+                        <div className='flex justify-between items-center gap-2 flex-wrap'>
+                            <h2 className='font-semibold text-lg'>
+                                {product?.name}
+                            </h2>
+                            <div className='flex gap-2'>
                                 <button
                                     onClick={() => handleEdit(product)}
                                     className='text-sm text-blue-600 underline'
@@ -290,29 +284,29 @@ const AdditionalProducts = () => {
                                 </button>
                                 <button
                                     onClick={() => handleDelete(product._id)}
-                                    className='text-sm text-blue-600 underline'
+                                    className='text-sm text-red-600 underline'
                                 >
                                     Delete
                                 </button>
                             </div>
-                            <p className='text-sm text-gray-600'>
-                                {product?.category}
-                            </p>
-                            <div className='flex gap-2 flex-wrap'>
-                                {product.images?.map((img, i) => (
-                                    <Image
-                                        key={i}
-                                        src={img.url}
-                                        alt={img.name}
-                                        width={60}
-                                        height={60}
-                                        className='rounded border'
-                                    />
-                                ))}
-                            </div>
                         </div>
-                    ))}
-                </div>
+                        <p className='text-sm text-gray-600'>
+                            {product?.category}
+                        </p>
+                        <div className='flex gap-2 flex-wrap'>
+                            {product.images?.map((img, i) => (
+                                <Image
+                                    key={i}
+                                    src={img.url}
+                                    alt={img.name}
+                                    width={60}
+                                    height={60}
+                                    className='rounded border'
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )
