@@ -5,10 +5,15 @@ const nextConfig = {
         serverActions: {
             bodySizeLimit: '500mb', // Only keep this if you need large uploads
         },
-        images:{
-            domains:['curtainsetup.ae', 'www.curtainsetup.ae'],
-            
-        }
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**.curtainsetup.ae',
+                pathname: '/uploads/**',
+            },
+        ],
     },
     // If you use external images, set allowed domains:
     // images: {
