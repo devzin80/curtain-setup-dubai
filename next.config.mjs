@@ -7,6 +7,8 @@ const nextConfig = {
         },
     },
     images: {
+        disableStaticImages: true,
+        unoptimized: true, // Disable Next.js image optimization
         remotePatterns: [
             {
                 protocol: 'https',
