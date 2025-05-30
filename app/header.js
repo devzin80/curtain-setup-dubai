@@ -17,8 +17,8 @@ const Header = async () => {
                     <div className='overflow-hidden w-[200px] h-[60px] flex justify-center items-center'>
                         {logo?.url ? (
                             <Image
-                                src={logo.url}
-                                overrideSrc={logo.url}
+                                src={`${curtainsetup.ae}logo.url`}
+                                overrideSrc={`${curtainsetup.ae}logo.url`}
                                 alt='Website Logo'
                                 width={200}
                                 height={60}
