@@ -34,7 +34,7 @@ export async function POST(req) {
 
             await writeFile(filepath, buffer)
 
-            const fileUrl = `curtainsetup.ae/uploads/logo/${filename}.${ext}`
+            const fileUrl = `https://curtainsetup.ae/uploads/logo/${filename}.${ext}`
 
             uploadedFiles.push({ filename, url: fileUrl })
         }
@@ -100,7 +100,7 @@ export async function PATCH(req) {
         
         const newFilePath = path.join(
             process.cwd(),
-            'public',
+            'uploads',
             'logo',
             `${filename}${ext}`,
         )
@@ -112,7 +112,7 @@ export async function PATCH(req) {
 
         await writeFile(newFilePath, buffer)
 
-        const newUrl = `curtainsetup.ae/uploads/logo/${filename}${ext}`
+        const newUrl = `https://curtainsetup.ae/uploads/logo/${filename}${ext}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()
