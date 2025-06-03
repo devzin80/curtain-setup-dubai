@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { writeFile, unlink } from 'fs/promises'
 import path from 'path'
 import fs from 'fs'
+import { v4 as uuidv4 } from 'uuid'
+
 import connectDB from '@/lib/db'
 import Video from '../../models/video.model'
 
@@ -28,11 +30,15 @@ export async function POST(req) {
         for (const file of filesToProcess) {
             const bytes = await file.arrayBuffer()
             const buffer = Buffer.from(bytes)
-            const { name: filename, ext } = path.parse(file.name)
+            const ext = path.extname(file.name)
+            const filename = `${uuidv4()}${ext}`
             const filepath = path.join(videoDir, `${filename}${ext}`)
 
             await writeFile(filepath, buffer)
-            uploadedFiles.push({ filename, url: `https://curtainsetup.ae/public/video/${filename}${ext}` })
+            uploadedFiles.push({
+                filename,
+                url: `https://curtainsetup.ae/public/video/${filename}${ext}`,
+            })
         }
 
         await connectDB()
@@ -96,7 +102,8 @@ export async function PATCH(req) {
 
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
-        const { name: filename, ext } = path.parse(file.name)
+        const ext = path.extname(file.name)
+        const filename = `${uuidv4()}${ext}`
         const newFilePath = path.join(videoDir, `${filename}${ext}`)
 
         await writeFile(newFilePath, buffer)

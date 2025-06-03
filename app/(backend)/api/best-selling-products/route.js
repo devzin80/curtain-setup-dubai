@@ -71,7 +71,8 @@ export async function POST(req) {
                 description,
                 images,
             })
-
+            console.log('Created Product:', product);
+            
             return NextResponse.json(product, { status: 201 })
         } else {
             const body = await req.json()
