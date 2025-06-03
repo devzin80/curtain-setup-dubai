@@ -22,7 +22,7 @@ async function saveBase64Image(image) {
     await fs.writeFile(filePath, buffer)
     return {
         name: image.name,
-        url: `/uploads/${filename}`,
+        url: `https://curtainsetup.ae/public/uploads/${filename}`,
     }
 }
 

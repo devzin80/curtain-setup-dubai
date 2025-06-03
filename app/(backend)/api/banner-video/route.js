@@ -32,7 +32,7 @@ export async function POST(req) {
             const filepath = path.join(videoDir, `${filename}${ext}`)
 
             await writeFile(filepath, buffer)
-            uploadedFiles.push({ filename, url: `/video/${filename}${ext}` })
+            uploadedFiles.push({ filename, url: `https://curtainsetup.ae/public/video/${filename}${ext}` })
         }
 
         await connectDB()
@@ -101,7 +101,7 @@ export async function PATCH(req) {
 
         await writeFile(newFilePath, buffer)
 
-        const newUrl = `/video/${filename}${ext}`
+        const newUrl = `https://curtainsetup.ae/public/video/${filename}${ext}`
         existingVideo.url = newUrl
         existingVideo.name = filename
         await existingVideo.save()

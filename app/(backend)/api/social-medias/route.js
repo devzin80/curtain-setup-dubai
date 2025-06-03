@@ -22,7 +22,7 @@ const handleUpload = async (formData) => {
             const filepath = path.join(uploadDir, filename)
 
             await writeFile(filepath, buffer)
-            uploaded.push({ name: file.name, url: `/uploads/${filename}` })
+            uploaded.push({ name: file.name, url: `https://curtainsetup.ae/public/uploads/${filename}` })
         }
     }
     return uploaded
@@ -101,7 +101,7 @@ export async function PATCH(req) {
 
         updatedLogo = {
             name: logo.name,
-            url: `/uploads/${filename}`,
+            url: `https://curtainsetup.ae/public/uploads/${filename}`,
         }
     }
 
