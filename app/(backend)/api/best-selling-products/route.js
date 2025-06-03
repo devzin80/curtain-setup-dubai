@@ -21,7 +21,7 @@ const handleUpload = async (formData) => {
             const filepath = path.join(uploadDir, filename)
 
             await writeFile(filepath, buffer)
-            uploaded.push({ name: file.name, url: `http://localhost:3000/public/uploads/${filename}` })
+            uploaded.push({ name: file.name, url: `https://curtainsetup.ae/public/uploads/${filename}` })
         }
     }
     return uploaded

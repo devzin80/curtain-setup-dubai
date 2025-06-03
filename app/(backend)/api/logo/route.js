@@ -25,7 +25,7 @@ async function handleLogoUpload(file) {
 
     return {
         name: file.name,
-        url: `http://localhost:3000/public/uploads/${filename}`,
+        url: `https://curtainsetup.ae/public/uploads/${filename}`,
         path: filePath,
     }
 }
