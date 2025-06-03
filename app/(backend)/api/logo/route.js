@@ -25,7 +25,7 @@ async function handleLogoUpload(file) {
 
     return {
         name: file.name,
-        url: `public/uploads/${filename}`,
+        url: `http://localhost:3000/public/uploads/${filename}`,
         path: filePath,
     }
 }
