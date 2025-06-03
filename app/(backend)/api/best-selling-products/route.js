@@ -55,6 +55,8 @@ export async function POST(req) {
 
         if (contentType?.includes('multipart/form-data')) {
             const formData = await req.formData()
+            console.log('Form Data:', formData);
+            
             const name = formData.get('name')
             const slug = formData.get('slug')
             const category = formData.get('category')
@@ -83,45 +85,6 @@ export async function POST(req) {
         )
     }
 }
-
-// ✅ PATCH: Update product
-// export async function PATCH(req) {
-//     try {
-//         await connectDB()
-//         console.log('PATCH request received');
-        
-//         const body = await req.json()
-//         console.log('Request body:', body);
-        
-//         const { _id, ...updateData } = body
-//         console.log('Update data:', updateData);
-//         console.log('_id:', _id);
-        
-
-//         const updatedProduct = await Product.findByIdAndUpdate(
-//             _id,
-//             updateData,
-//             {
-//                 new: true,
-//             },
-//         )
-//         console.log('Updated product:', updatedProduct);
-
-//         if (!updatedProduct) {
-//             return NextResponse.json(
-//                 { error: 'Product not found' },
-//                 { status: 404 },
-//             )
-//         }
-
-//         return NextResponse.json(updatedProduct)
-//     } catch (err) {
-//         return NextResponse.json(
-//             { error: err.message || 'Failed to update product' },
-//             { status: 500 },
-//         )
-//     }
-// }
 
 // ✅ DELETE: Remove product and images
 export async function DELETE(req) {
@@ -168,7 +131,6 @@ export async function DELETE(req) {
         )
     }
 }
-
 
 // modified patch
 
@@ -273,4 +235,3 @@ export async function PATCH(req) {
         return NextResponse.json({ error: err.message }, { status: 500 })
     }
 }
-

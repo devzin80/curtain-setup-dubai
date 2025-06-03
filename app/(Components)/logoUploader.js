@@ -7,9 +7,7 @@ const LogoUploader = () => {
     const [uploading, setUploading] = useState(false)
     const inputRef = useRef(null)
 
-    useEffect(() => {
-        fetchLogo()
-    }, [])
+
 
     const fetchLogo = async () => {
         try {
@@ -22,6 +20,10 @@ const LogoUploader = () => {
             console.error('Failed to fetch logo:', err)
         }
     }
+
+    useEffect(() => {
+        fetchLogo()
+    }, [])
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0]

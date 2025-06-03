@@ -7,7 +7,7 @@ import connectDB from '@/lib/db'
 import Logo from '../../models/logo.model'
 
 
-const LOGO_DIR = path.join(process.cwd(), 'public', 'uploads', 'logo')
+const LOGO_DIR = path.join(process.cwd(), 'public', 'uploads')
 if (!existsSync(LOGO_DIR)) {
     mkdirSync(LOGO_DIR, { recursive: true })
 }
@@ -25,7 +25,7 @@ async function handleLogoUpload(file) {
 
     return {
         name: file.name,
-        url: `/uploads/logo/${filename}`,
+        url: `/uploads/${filename}`,
         path: filePath,
     }
 }
