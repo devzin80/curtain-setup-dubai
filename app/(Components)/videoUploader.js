@@ -8,16 +8,17 @@ export default function Uploader() {
     const [uploadId, setUploadId] = useState(null)
     const [videoUrl, setVideoUrl] = useState(null)
     const [showUploader, setShowUploader] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [toastMessage, setToastMessage] = useState(null)
+
     const inputRef = useRef(null)
 
-    // Clean up object URLs to prevent memory leaks
     useEffect(() => {
         return () => {
             files.forEach((f) => URL.revokeObjectURL(f.preview))
         }
     }, [files])
 
-    // Fetch existing video on initial render
     useEffect(() => {
         const fetchVideo = async () => {
             try {
@@ -40,7 +41,11 @@ export default function Uploader() {
         fetchVideo()
     }, [apiPath])
 
-    // Only allow one video at a time
+    const showToast = (message, duration = 3000) => {
+        setToastMessage(message)
+        setTimeout(() => setToastMessage(null), duration)
+    }
+
     const handleFiles = (selectedFiles) => {
         if (!selectedFiles.length) return
         const file = selectedFiles[0]
@@ -66,58 +71,40 @@ export default function Uploader() {
         }
     }
 
-    const handleUpdate = async () => {
-        if (!files.length || !uploadId) return
-
-        const formData = new FormData()
-        formData.append('file', files[0].file)
-        formData.append('_id', uploadId)
-
-        try {
-            const res = await fetch(apiPath, {
-                method: 'PATCH',
-                body: formData,
-            })
-            const data = await res.json()
-
-            if (data?.video) {
-                setVideoUrl(data.video.url)
-                setFiles([])
-                setShowUploader(false)
-                alert('Video updated successfully')
-            } else {
-                console.error('Invalid update response:', data)
-            }
-        } catch (err) {
-            console.error('Update failed:', err)
-        }
-    }
-
-    const handleUpload = async () => {
+    const handleUploadOrUpdate = async () => {
         if (!files.length) return
 
         const formData = new FormData()
         formData.append('file', files[0].file)
+        if (uploadId) formData.append('_id', uploadId)
 
+        setLoading(true)
         try {
             const res = await fetch(apiPath, {
-                method: 'POST',
+                method: uploadId ? 'PATCH' : 'POST',
                 body: formData,
             })
             const data = await res.json()
 
-            if (data?.videos?.length > 0) {
-                const uploadedVideo = data.videos[0]
-                setUploadId(uploadedVideo._id)
-                setVideoUrl(uploadedVideo.url)
+            const updatedVideo = uploadId ? data.video : data.videos?.[0]
+            if (updatedVideo) {
+                setUploadId(updatedVideo._id)
+                setVideoUrl(updatedVideo.url)
                 setFiles([])
                 setShowUploader(false)
-                alert('Uploaded successfully')
+                showToast(
+                    uploadId
+                        ? 'Video updated successfully'
+                        : 'Video uploaded successfully',
+                )
             } else {
-                console.error('Invalid response:', data)
+                showToast('Something went wrong.')
             }
         } catch (err) {
             console.error('Upload failed:', err)
+            showToast('Upload failed.')
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -131,42 +118,40 @@ export default function Uploader() {
 
     if (!showUploader && videoUrl) {
         return (
-            <div className='w-full max-w-5xl flex flex-col items-center justify-center space-y-4'>
+            <div className='w-full max-w-5xl mx-auto flex flex-col items-center justify-center px-4 space-y-4'>
                 <video
                     autoPlay
                     muted
                     loop
                     controls
-                    className='w-full h-full object-cover rounded'
+                    className='w-full h-auto max-h-[500px] object-cover rounded'
                 >
                     <source
                         src={videoUrl}
                         type='video/mp4'
                     />
-                    <source
-                        src={videoUrl}
-                        type='video/webm'
-                    />
-                    <source
-                        src={videoUrl}
-                        type='video/ogg'
-                    />
                     Your browser does not support the video tag.
                 </video>
 
                 <button
-                    className='cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded'
+                    className='bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-6 rounded transition'
                     onClick={() => setShowUploader(true)}
                 >
                     Change Video
                 </button>
+
+                {toastMessage && (
+                    <div className='fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white py-2 px-4 rounded shadow'>
+                        {toastMessage}
+                    </div>
+                )}
             </div>
         )
     }
 
     return (
         <div
-            className='max-w-5xl mx-auto p-6 border-2 border-dashed border-blue-400 rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 transition'
+            className='max-w-5xl mx-auto px-4 py-6 border-2 border-dashed border-blue-400 rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 transition relative'
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={openFilePicker}
@@ -178,24 +163,24 @@ export default function Uploader() {
                 hidden
                 ref={inputRef}
             />
-            <div className='text-center text-blue-500 font-semibold'>
+
+            <div className='text-center text-blue-500 font-semibold text-base md:text-lg'>
                 Drag & Drop video here or Click to Browse
             </div>
 
             {files.length > 0 && (
                 <>
-                    <div className='flex justify-center items-center gap-4 mt-6 flex-wrap'>
+                    <div className='flex flex-col md:flex-row justify-center items-center gap-4 mt-6 flex-wrap'>
                         {files.map((fileObj, idx) => (
                             <div
                                 key={idx}
-                                className='relative border p-2 rounded group'
+                                className='relative border p-2 rounded group w-full sm:w-3/4 md:w-1/2 lg:w-1/3'
                             >
                                 <video
                                     src={fileObj.preview}
                                     controls
-                                    className='w-2/4 h-2/4 object-cover rounded'
+                                    className='w-full h-auto rounded object-cover'
                                 />
-
                                 <button
                                     aria-label='Remove video'
                                     onClick={(e) => {
@@ -213,13 +198,28 @@ export default function Uploader() {
                     <button
                         onClick={(e) => {
                             e.stopPropagation()
-                            uploadId ? handleUpdate() : handleUpload()
+                            handleUploadOrUpdate()
                         }}
-                        className='mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded cursor-pointer'
+                        disabled={loading}
+                        className={`mt-6 w-full md:w-auto px-6 py-2 rounded text-white font-medium ${
+                            loading
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-500 hover:bg-blue-600'
+                        }`}
                     >
-                        {uploadId ? 'Update Video' : 'Upload Video'}
+                        {loading
+                            ? 'Uploading...'
+                            : uploadId
+                            ? 'Update Video'
+                            : 'Upload Video'}
                     </button>
                 </>
+            )}
+
+            {toastMessage && (
+                <div className='fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white py-2 px-4 rounded shadow'>
+                    {toastMessage}
+                </div>
             )}
         </div>
     )
