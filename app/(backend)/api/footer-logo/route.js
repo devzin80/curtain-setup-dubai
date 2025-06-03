@@ -35,7 +35,7 @@ export async function POST(req) {
 
             await writeFile(filepath, buffer)
 
-            const fileUrl = `https://curtainsetup.ae/public/logo/${filename}.${ext}`
+            const fileUrl = `https://curtainsetup.ae/public/logo/${filename}${ext}`
             
             uploadedFiles.push({ filename, url: fileUrl })
         }
@@ -116,7 +116,7 @@ export async function PATCH(req) {
         await writeFile(newFilePath, buffer)
 
         // Update DB
-        const newUrl =`https://curtainsetup.ae/public/logo/${filename}.${ext}`
+        const newUrl =`https://curtainsetup.ae/public/logo/${filename}${ext}`
         existingLogo.url = newUrl
         existingLogo.name = filename
         await existingLogo.save()
