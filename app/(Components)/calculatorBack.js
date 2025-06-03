@@ -181,7 +181,7 @@ export default function CalculatorPage() {
                             onChange={(e) =>
                                 setForm({ ...form, price: e.target.value })
                             }
-                            required
+                            required={!form.hasVariants}
                             className='w-full p-3 border rounded'
                         />
                     </div>
@@ -200,7 +200,7 @@ export default function CalculatorPage() {
                             onChange={(e) =>
                                 setForm({ ...form, factor: e.target.value })
                             }
-                            required
+                            required={!form.hasVariants}
                             className='w-full p-3 border rounded'
                         />
                     </div>
@@ -232,7 +232,7 @@ export default function CalculatorPage() {
                                             e.target.value,
                                         )
                                     }
-                                    required
+                                    required={form.hasVariants}
                                     className='p-3 border rounded'
                                 />
                             </div>
@@ -255,7 +255,7 @@ export default function CalculatorPage() {
                                             e.target.value,
                                         )
                                     }
-                                    required
+                                    required={form.hasVariants}
                                     className='p-3 border rounded'
                                 />
                             </div>
@@ -278,7 +278,7 @@ export default function CalculatorPage() {
                                             e.target.value,
                                         )
                                     }
-                                    required
+                                    required={form.hasVariants}
                                     className='p-3 border rounded'
                                 />
                             </div>
