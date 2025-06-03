@@ -10,22 +10,20 @@ import RecentWorks from '../../models/recentworks.model'
 const uploadDir = path.join(process.cwd(), 'public', 'uploads')
 if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
 
-const handleUpload = async (formData) => {
-    const files = formData.getAll('files')
-    const uploaded = []
-
-    for (const file of files) {
-        if (file && file.name) {
-            const buffer = Buffer.from(await file.arrayBuffer())
-            const ext = path.extname(file.name)
-            const filename = `${uuidv4()}${ext}`
-            const filepath = path.join(uploadDir, filename)
-
-            await writeFile(filepath, buffer)
-            uploaded.push({ name: file.name, url: `/uploads/${filename}` })
-        }
+// Helper to save image from base64
+async function saveBase64Image(image) {
+    const ext = image.name.split('.').pop()
+    if (!ext) throw new Error('Invalid image filename')
+    const base64Data = image.url.split(',')[1]
+    const buffer = Buffer.from(base64Data, 'base64')
+    const filename = `${uuidv4()}.${ext}`
+    await fs.mkdir(uploadDir, { recursive: true })
+    const filePath = path.join(uploadDir, filename)
+    await fs.writeFile(filePath, buffer)
+    return {
+        name: image.name,
+        url: `/uploads/${filename}`,
     }
-    return uploaded
 }
 
 // GET all recent works
@@ -46,37 +44,31 @@ export async function GET() {
 export async function POST(req) {
     try {
         await connectDB()
-        const contentType = req.headers.get('content-type')
+        const body = await req.json()
 
-        if (contentType?.includes('multipart/form-data')) {
-            const formData = await req.formData()
-            const title = formData.get('title')
+        const { location, image } = body
 
-            if (!title) {
-                return NextResponse.json(
-                    { error: 'Title is required' },
-                    { status: 400 },
-                )
-            }
-
-            const image = await handleUpload(formData)
-            const newWork = await RecentWorks.create({
-                title,
-                image: image.length ? image[0] : null,
-            })
-
-            return NextResponse.json(newWork, { status: 201 })
-        } else {
-            const body = await req.json()
-            if (!body.title) {
-                return NextResponse.json(
-                    { error: 'Title is required' },
-                    { status: 400 },
-                )
-            }
-            const newWork = await RecentWorks.create(body)
-            return NextResponse.json(newWork, { status: 201 })
+        if (!location) {
+            return NextResponse.json(
+                { error: 'Location is required' },
+                { status: 400 },
+            )
         }
+
+        let savedImage = null
+        if (image && image.url?.startsWith('data:image')) {
+            savedImage = await saveBase64Image(image)
+        } else if (image && image.url && image.name) {
+            // if image is already uploaded url, use as is
+            savedImage = image
+        }
+
+        const newWork = await RecentWorks.create({
+            location,
+            image: savedImage,
+        })
+
+        return NextResponse.json(newWork, { status: 201 })
     } catch (error) {
         return NextResponse.json(
             { error: 'Server error', details: error.message },
@@ -89,11 +81,12 @@ export async function POST(req) {
 export async function PATCH(req) {
     try {
         await connectDB()
-        const { _id, title, image } = await req.json()
+        const body = await req.json()
+        const { _id, location, image } = body
 
-        if (!_id || !title) {
+        if (!_id || !location) {
             return NextResponse.json(
-                { error: 'ID and title are required' },
+                { error: 'ID and location are required' },
                 { status: 400 },
             )
         }
@@ -106,49 +99,35 @@ export async function PATCH(req) {
             )
         }
 
-        // Handle image update if changed
         let updatedImage = existingWork.image
 
+        // If new image is a base64 string, save it and delete old one
         if (image?.url?.startsWith('data:image')) {
-            // Delete old image if exists
             if (existingWork.image?.url) {
                 const oldPath = path.join(
                     process.cwd(),
                     'public',
-                    existingWork.image.url.replace('/uploads/', 'uploads/'),
+                    existingWork.image.url.replace(/^\//, ''),
                 )
                 try {
-                    await fs.unlink(oldPath)
+                    await unlink(oldPath)
                 } catch {
-                    // silently ignore if old image not found
+                    // ignore
                 }
             }
 
-            // Save new image to disk
-            const ext = image.name.split('.').pop()
-            if (!ext) {
-                return NextResponse.json(
-                    { error: 'Invalid image filename' },
-                    { status: 400 },
-                )
-            }
-
-            const base64Data = image.url.split(',')[1]
-            const buffer = Buffer.from(base64Data, 'base64')
-            const filename = `${uuidv4()}.${ext}`
-            await fs.mkdir(uploadDir, { recursive: true })
-            const filePath = path.join(uploadDir, filename)
-            await fs.writeFile(filePath, buffer)
-
-            updatedImage = {
-                name: image.name,
-                url: `/uploads/${filename}`,
-            }
+            updatedImage = await saveBase64Image(image)
+        } else if (image && image.url && image.name) {
+            // Image unchanged, keep as is
+            updatedImage = image
+        } else {
+            // If no image sent or empty image, set to null
+            updatedImage = null
         }
 
         const updated = await RecentWorks.findByIdAndUpdate(
             _id,
-            { title, image: updatedImage },
+            { location, image: updatedImage },
             { new: true },
         )
 
@@ -187,12 +166,12 @@ export async function DELETE(req) {
             const filePath = path.join(
                 process.cwd(),
                 'public',
-                recentWork.image.url.replace(/^\//, ''), // ensure no leading slash
+                recentWork.image.url.replace(/^\//, ''),
             )
             try {
                 await unlink(filePath)
             } catch {
-                // silently ignore if file missing
+                // ignore
             }
         }
 

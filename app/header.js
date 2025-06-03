@@ -7,7 +7,7 @@ import { getLogo } from '@/lib/actions/dataFetch'
 
 const Header = async () => {
     const logo = await getLogo()
-    // console.log('Logo:', logo);
+    console.log('Logo from header:', logo);
     return (
         <header className='sticky top-0 w-full h-[12vh] bg-white text-black text-xl flex justify-center items-center shadow z-20'>
             <div className='w-11/12 max-w-7xl mx-auto h-full flex justify-between items-center'>

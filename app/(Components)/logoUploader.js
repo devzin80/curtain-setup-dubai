@@ -1,441 +1,92 @@
-// 'use client'
-
-// import Image from 'next/image'
-// import { useState, useRef, useEffect } from 'react'
-
-// export default function Uploader() {
-//     const apiPath = '/api/logo'
-//     const [files, setFiles] = useState([])
-//     const [uploadId, setUploadId] = useState(null)
-//     const [logoUrl, setLogoUrl] = useState(null)
-//     const [showUploader, setShowUploader] = useState(false)
-//     const inputRef = useRef(null)
-
-//     // Fetch existing logo on initial render
-// useEffect(() => {
-//     const fetchLogo = async () => {
-//         try {
-//             const res = await fetch(apiPath)
-//             const data = await res.json()
-
-//             if (data?.length > 0) {
-//                 const logo = data[0]
-//                 setUploadId(logo._id)
-//                 setLogoUrl(logo.url)
-//                 setShowUploader(false)
-//             } else {
-//                 setShowUploader(true)
-//             }
-//         } catch (err) {
-//             console.error('Failed to fetch logo:', err)
-//             setShowUploader(true)
-//         }
-//     }
-//     fetchLogo()
-// }, [apiPath])
-
-
-//     const handleFiles = (selectedFiles) => {
-//         const filesArray = Array.from(selectedFiles).map((file) => ({
-//             file,
-//             preview: URL.createObjectURL(file),
-//         }))
-//         setFiles((prev) => [...prev, ...filesArray])
-//     }
-
-//     const handleDragOver = (e) => {
-//         e.preventDefault()
-//         e.stopPropagation()
-//     }
-
-//     const handleDrop = (e) => {
-//         e.preventDefault()
-//         e.stopPropagation()
-//         const droppedFiles = e.dataTransfer.files
-//         if (droppedFiles.length > 0) {
-//             handleFiles(droppedFiles)
-//         }
-//     }
-
-    
-
-// const handleUpdate = async () => {
-//     if (!files.length || !uploadId) return
-
-//     const formData = new FormData()
-//     formData.append('file', files[0].file)
-//     formData.append('_id', uploadId)
-
-//     try {
-//         const res = await fetch(apiPath, {
-//             method: 'PATCH',
-//             body: formData,
-//         })
-//         const data = await res.json()
-//         console.log('Update response:', data)
-
-//         if (data?.logo) {
-//             setLogoUrl(data.logo.url)
-//             setFiles([])
-//             setShowUploader(false)
-//             alert('Logo updated successfully')
-//         } else {
-//             console.error('Invalid update response:', data)
-//         }
-//     } catch (err) {
-//         console.error('Update failed:', err)
-//     }
-// }
-
-
-
-
-//     const handleUpload = async () => {
-//         if (!files.length) return
-
-//         const formData = new FormData()
-//         files.forEach(({ file }) => formData.append('file', file))
-
-//         try {
-//             const res = await fetch(apiPath, {
-//                 method: 'POST',
-//                 body: formData,
-//             })
-//             const data = await res.json()
-
-//             if (data?.logos?.length > 0) {
-//                 const uploadedLogo = data.logos[0]
-//                 setUploadId(uploadedLogo._id)
-//                 setLogoUrl(uploadedLogo.url)
-//                 setFiles([])
-//                 setShowUploader(false)
-//                 alert('Uploaded successfully')
-//             } else {
-//                 console.error('Invalid response:', data)
-//             }
-//         } catch (err) {
-//             console.error('Upload failed:', err)
-//         }
-//     }
-
-//     const openFilePicker = () => {
-//         inputRef.current.click()
-//     }
-
-//     const handleDelete = (preview) => {
-//         setFiles((prev) => prev.filter((f) => f.preview !== preview))
-//     }
-
-//     if (!showUploader && logoUrl) {
-//         return (
-//             <div className='flex flex-col items-center justify-center space-y-4'>
-//                 <Image
-//                     src={logoUrl}
-//                     alt='Uploaded Logo'
-//                     width={600}
-//                     height={600}
-//                     className='object-contain rounded border border-cyan-600 p-3'
-//                 />
-//                 <button
-//                     className='cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded'
-//                     onClick={() => setShowUploader(true)}
-//                 >
-//                     Change Logo
-//                 </button>
-//             </div>
-//         )
-//     }
-
-//     return (
-//         <div
-//             className='max-w-5xl mx-auto p-6 border-2 border-dashed border-blue-400 rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 transition'
-//             onDragOver={handleDragOver}
-//             onDrop={handleDrop}
-//             onClick={openFilePicker}
-//         >
-//             <input
-//                 type='file'
-//                 multiple
-//                 onChange={(e) => handleFiles(e.target.files)}
-//                 hidden
-//                 ref={inputRef}
-//             />
-//             <div className='text-center text-blue-500 font-semibold'>
-//                 Drag & Drop files here or Click to Browse
-//             </div>
-
-//             {files.length > 0 && (
-//                 <>
-//                     <div className='flex justify-start items-center gap-4 mt-6 flex-wrap'>
-//                         {files.map((fileObj, idx) => (
-//                             <div
-//                                 key={idx}
-//                                 className='relative border p-2 rounded group'
-//                             >
-//                                 {fileObj.preview.endsWith('.mp4') ? (
-//                                     <video
-//                                         src={fileObj.preview}
-//                                         controls
-//                                         className='w-32 h-32 object-cover rounded'
-//                                     />
-//                                 ) : (
-//                                     <Image
-//                                         src={fileObj.preview}
-//                                         width={600}
-//                                         height={600}
-//                                         alt='file preview'
-//                                         className='w-2/4 h-2/4 object-cover rounded'
-//                                     />
-//                                 )}
-//                                 <button
-//                                     onClick={(e) => {
-//                                         e.stopPropagation()
-//                                         handleDelete(fileObj.preview)
-//                                     }}
-//                                     className='absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hidden group-hover:block'
-//                                 >
-//                                     ✕
-//                                 </button>
-//                             </div>
-//                         ))}
-//                     </div>
-
-//                     <button
-//                         onClick={(e) => {
-//                             e.stopPropagation()
-//                             uploadId ? handleUpdate() : handleUpload()
-//                         }}
-//                         className='mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded cursor-pointer'
-//                     >
-//                         {uploadId? 'Update Logo' : 'Upload Logo'}
-//                     </button>
-//                 </>
-//             )}
-//         </div>
-//     )
-// }
-
-
 'use client'
-
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { useState, useRef, useEffect } from 'react'
 
-export default function Uploader({ apiPath = '/api/logo' }) {
-    const [files, setFiles] = useState([])
-    const [uploadId, setUploadId] = useState(null)
-    const [logoUrl, setLogoUrl] = useState(null)
-    const [showUploader, setShowUploader] = useState(false)
+const LogoUploader = () => {
+    const [logo, setLogo] = useState(null)
+    const [uploading, setUploading] = useState(false)
     const inputRef = useRef(null)
 
-    // Clean up object URLs to prevent memory leaks
     useEffect(() => {
-        return () => {
-            files.forEach((f) => URL.revokeObjectURL(f.preview))
-        }
-    }, [files])
-
-    // Fetch existing logo on initial render
-    useEffect(() => {
-        console.log('Fetching logo from:', apiPath);
-        
-        const fetchLogo = async () => {
-            try {
-                const res = await fetch(apiPath)
-                const data = await res.json()
-                console.log('Fetched logo:', data);
-
-                if (data?.logos?.length > 0) {
-                    console.log('Logo found:', data.logos[0]);
-                    
-                    const logo = data.logos[0]
-                    setUploadId(logo._id)
-                    setLogoUrl(logo.url)
-                    setShowUploader(false)
-                } else {
-                    setShowUploader(true)
-                    console.log('No logo found, showing uploader');
-                }
-            } catch (err) {
-                console.error('Failed to fetch logo:', err)
-                setShowUploader(true)
-            }
-        }
         fetchLogo()
-    }, [apiPath])
+    }, [])
 
-    // Only allow one file (logo) at a time
-    const handleFiles = (selectedFiles) => {
-        if (!selectedFiles.length) return
-        const file = selectedFiles[0]
-        setFiles([
-            {
-                file,
-                preview: URL.createObjectURL(file),
-            },
-        ])
-    }
-
-    const handleDragOver = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
-    const handleDrop = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        const droppedFiles = e.dataTransfer.files
-        if (droppedFiles.length > 0) {
-            handleFiles(droppedFiles)
+    const fetchLogo = async () => {
+        try {
+            const res = await fetch('/api/logo')
+            const data = await res.json()
+            if (data.logo) {
+                setLogo(data.logo)
+            }
+        } catch (err) {
+            console.error('Failed to fetch logo:', err)
         }
     }
 
-    const handleUpdate = async () => {
-        if (!files.length || !uploadId) return
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0]
+        if (!file) return
 
         const formData = new FormData()
-        formData.append('file', files[0].file)
-        formData.append('_id', uploadId)
+        formData.append('file', file)
 
+        setUploading(true)
         try {
-            const res = await fetch(apiPath, {
-                method: 'PATCH',
+            const res = await fetch('/api/logo', {
+                method: logo ? 'PATCH' : 'POST',
                 body: formData,
             })
             const data = await res.json()
-
-            if (data?.logo) {
-                setLogoUrl(data.logo.url)
-                setFiles([])
-                setShowUploader(false)
-                alert('Logo updated successfully')
-            } else {
-                console.error('Invalid update response:', data)
+            if (data.logo) {
+                setLogo(data.logo)
             }
         } catch (err) {
-            console.error('Update failed:', err)
-        }
-    }
-
-    const handleUpload = async () => {
-        if (!files.length) return
-
-        const formData = new FormData()
-        formData.append('file', files[0].file)
-
-        try {
-            const res = await fetch(apiPath, {
-                method: 'POST',
-                body: formData,
-            })
-            const data = await res.json()
-            console.log('Upload response:', data);
-            
-
-            if (data?.logos?.length > 0) {
-                const uploadedLogo = data.logos[0]
-                setUploadId(uploadedLogo._id)
-                setLogoUrl(uploadedLogo.url)
-                setFiles([])
-                setShowUploader(false)
-                alert('Uploaded successfully')
-            } else {
-                console.error('Invalid response:', data)
-            }
-        } catch (err) {
-            console.error('Upload failed:', err)
+            console.error('Failed to upload logo:', err)
+        } finally {
+            setUploading(false)
         }
     }
 
     const openFilePicker = () => {
-        inputRef.current.click()
-    }
-
-    const handleDelete = (preview) => {
-        setFiles((prev) => prev.filter((f) => f.preview !== preview))
-    }
-
-    // console.log('Current logo URL:', logoUrl);
-    // console.log('Show uploader:', showUploader);
-    
-    if (!showUploader && logoUrl) {
-        return (
-            <div className='flex flex-col items-center justify-center space-y-4'>
-                <Image
-                    src={logoUrl}
-                    alt='Uploaded Logo'
-                    width={600}
-                    height={600}
-                    className='object-contain rounded border border-cyan-600 p-3'
-                />
-                <button
-                    className='cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded'
-                    onClick={() => setShowUploader(true)}
-                >
-                    Change Logo
-                </button>
-            </div>
-        )
+        inputRef.current?.click()
     }
 
     return (
-        <div
-            className='max-w-5xl mx-auto p-6 border-2 border-dashed border-blue-400 rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 transition'
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={openFilePicker}
-        >
-            <input
-                type='file'
-                accept='image/*'
-                onChange={(e) => handleFiles(e.target.files)}
-                hidden
-                ref={inputRef}
-            />
-            <div className='text-center text-blue-500 font-semibold'>
-                Drag & Drop logo here or Click to Browse
+        <div className='w-[30vw] mx-auto bg-white p-6 rounded shadow'>
+            <h2 className='text-xl font-bold mb-4 text-center'>Upload Logo</h2>
+
+            <div
+                className='w-full p-6 border-2 border-dashed rounded-md text-center cursor-pointer hover:border-blue-600'
+                onClick={openFilePicker}
+            >
+                <p className='text-gray-600'>Click to upload or replace logo</p>
+                <input
+                    type='file'
+                    hidden
+                    accept='image/*'
+                    onChange={handleFileChange}
+                    ref={inputRef}
+                />
             </div>
 
-            {files.length > 0 && (
-                <>
-                    <div className='flex justify-start items-center gap-4 mt-6 flex-wrap'>
-                        {files.map((fileObj, idx) => (
-                            <div
-                                key={idx}
-                                className='relative border p-2 rounded group'
-                            >
-                                <Image
-                                    src={fileObj.preview}
-                                    width={600}
-                                    height={600}
-                                    alt='file preview'
-                                    className='w-2/4 h-2/4 object-cover rounded'
-                                />
-                                <button
-                                    aria-label='Remove image'
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleDelete(fileObj.preview)
-                                    }}
-                                    className='absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hidden group-hover:block'
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+            {logo?.url && (
+                <div className='mt-4 text-center'>
+                    <Image
+                        src={logo.url}
+                        alt={logo.name}
+                        width={120}
+                        height={120}
+                        className='mx-auto border rounded'
+                    />
+                    <p className='text-sm text-gray-500 mt-1'>{logo.name}</p>
+                </div>
+            )}
 
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            uploadId ? handleUpdate() : handleUpload()
-                        }}
-                        className='mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded cursor-pointer'
-                    >
-                        {uploadId ? 'Update Logo' : 'Upload Logo'}
-                    </button>
-                </>
+            {uploading && (
+                <p className='mt-4 text-blue-600 text-center'>Uploading...</p>
             )}
         </div>
     )
 }
+
+export default LogoUploader

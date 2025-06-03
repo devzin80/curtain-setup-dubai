@@ -1,470 +1,3 @@
-// 'use client'
-// import React from 'react'
-
-// const CalculatorBack = () => {
-
-
-
-//     return (
-//         <div className='w-[90vw] md:w-[40vw] mx-auto p-6'>
-//             <h1 className='text-2xl font-bold mb-6 text-center'>
-//                 Set Up Curtain Price Calculator
-//             </h1>
-//             <div>
-//                 <label className='block font-medium'>Curtain Name</label>
-//                 <input
-//                     type='text'
-//                     name='name'
-//                     className='w-full border p-2 rounded'
-//                     value={''} 
-//                     onChange={''}
-//                 />
-//             </div>
-//             <div>
-//                 <label className='block font-medium'>Have Variants</label>
-//                 <input
-//                     type='checkbox'
-//                     name='haveVariants'
-//                     className='w-full border p-2 rounded'
-//                     value={''} 
-//                     onChange={''}
-//                 />
-//             </div>
-//         </div>
-//     )
-// }
-
-// export default CalculatorBack
-
-
-
-// 'use client'
-
-// import { useEffect, useState } from 'react'
-// import { useParams, useRouter } from 'next/navigation'
-
-// export default function CalculatorBack() {
-//     const { id } = useParams()
-//     const router = useRouter()
-
-//     const [loading, setLoading] = useState(true)
-//     const [name, setName] = useState('')
-//     const [hasVariants, setHasVariants] = useState(false)
-//     const [price, setPrice] = useState('')
-//     const [factor, setFactor] = useState('')
-//     const [variants, setVariants] = useState([])
-
-//     useEffect(() => {
-//         const fetchCalculator = async () => {
-//             const res = await fetch(`/api/calculator/${id}`)
-//             const data = await res.json()
-
-//             setName(data.name)
-//             setHasVariants(data.hasVariants)
-//             setPrice(data.price || '')
-//             setFactor(data.factor || '')
-//             setVariants(data.variants || [])
-//             setLoading(false)
-//         }
-
-//         if (id) fetchCalculator()
-//     }, [id])
-
-//     const handleVariantChange = (index, field, value) => {
-//         const updated = [...variants]
-//         updated[index][field] = value
-//         setVariants(updated)
-//     }
-
-//     const addVariant = () => {
-//         setVariants([...variants, { name: '', price: '', factor: '' }])
-//     }
-
-//     const removeVariant = (index) => {
-//         const updated = variants.filter((_, i) => i !== index)
-//         setVariants(updated)
-//     }
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault()
-//         const payload = {
-//             name,
-//             hasVariants,
-//             ...(hasVariants
-//                 ? { variants }
-//                 : { price: Number(price), factor: Number(factor) }),
-//         }
-
-//         const res = await fetch(`/api/calculator/${id}`, {
-//             method: 'PUT',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify(payload),
-//         })
-
-//         if (res.ok) {
-//             router.push('/calculator') // Redirect or show success
-//         }
-//     }
-
-//     if (loading) return <p className='text-center p-6'>Loading...</p>
-
-//     return (
-//         <div className='max-w-2xl mx-auto p-6'>
-//             <form
-//                 onSubmit={handleSubmit}
-//                 className='space-y-6 bg-white shadow-lg rounded-2xl p-8 border'
-//             >
-//                 <h2 className='text-2xl font-bold mb-4'>Edit Calculator</h2>
-
-//                 <div>
-//                     <label className='block mb-1 font-medium'>Name</label>
-//                     <input
-//                         type='text'
-//                         className='w-full border px-4 py-2 rounded'
-//                         value={name}
-//                         onChange={(e) => setName(e.target.value)}
-//                         required
-//                     />
-//                 </div>
-
-//                 <div className='flex items-center gap-4'>
-//                     <label className='font-medium'>Has Variants?</label>
-//                     <input
-//                         type='checkbox'
-//                         checked={hasVariants}
-//                         onChange={() => setHasVariants(!hasVariants)}
-//                         className='w-5 h-5'
-//                     />
-//                 </div>
-
-//                 {!hasVariants && (
-//                     <>
-//                         <div>
-//                             <label className='block mb-1 font-medium'>
-//                                 Price
-//                             </label>
-//                             <input
-//                                 type='number'
-//                                 className='w-full border px-4 py-2 rounded'
-//                                 value={price}
-//                                 onChange={(e) => setPrice(e.target.value)}
-//                                 required
-//                             />
-//                         </div>
-//                         <div>
-//                             <label className='block mb-1 font-medium'>
-//                                 Factor
-//                             </label>
-//                             <input
-//                                 type='number'
-//                                 className='w-full border px-4 py-2 rounded'
-//                                 value={factor}
-//                                 onChange={(e) => setFactor(e.target.value)}
-//                                 required
-//                             />
-//                         </div>
-//                     </>
-//                 )}
-
-//                 {hasVariants && (
-//                     <div className='space-y-4'>
-//                         <label className='block font-medium'>Variants</label>
-//                         {variants.map((variant, index) => (
-//                             <div
-//                                 key={index}
-//                                 className='grid grid-cols-3 gap-3 items-end border p-4 rounded'
-//                             >
-//                                 <input
-//                                     type='text'
-//                                     placeholder='Variant Name'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.name}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'name',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <input
-//                                     type='number'
-//                                     placeholder='Price'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.price}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'price',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <input
-//                                     type='number'
-//                                     placeholder='Factor'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.factor}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'factor',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <button
-//                                     type='button'
-//                                     onClick={() => removeVariant(index)}
-//                                     className='text-red-600 text-sm underline col-span-3'
-//                                 >
-//                                     Remove Variant
-//                                 </button>
-//                             </div>
-//                         ))}
-//                         <button
-//                             type='button'
-//                             onClick={addVariant}
-//                             className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-//                         >
-//                             + Add Variant
-//                         </button>
-//                     </div>
-//                 )}
-
-//                 <button
-//                     type='submit'
-//                     className='w-full bg-green-600 text-white py-2 rounded hover:bg-green-700'
-//                 >
-//                     Update Calculator
-//                 </button>
-//             </form>
-//         </div>
-//     )
-// }
-
-// 'use client'
-
-// import { useEffect, useState } from 'react'
-// import { useSearchParams, useRouter } from 'next/navigation'
-
-// export default function CalculatorFormPage() {
-//     const router = useRouter()
-//     const searchParams = useSearchParams()
-//     const id = searchParams.get('id')
-
-//     const [loading, setLoading] = useState(true)
-//     const [name, setName] = useState('')
-//     const [hasVariants, setHasVariants] = useState(false)
-//     const [price, setPrice] = useState('')
-//     const [factor, setFactor] = useState('')
-//     const [variants, setVariants] = useState([])
-
-//     useEffect(() => {
-//         if (!id) return setLoading(false)
-
-//         const fetchData = async () => {
-//             const res = await fetch(`/api/calculator/`)
-//             if (res.ok) {
-//                 const data = await res.json()
-//                 setName(data.name)
-//                 setHasVariants(data.hasVariants)
-//                 setPrice(data.price || '')
-//                 setFactor(data.factor || '')
-//                 setVariants(data.variants || [])
-//             }
-//             setLoading(false)
-//         }
-
-//         fetchData()
-//     }, [id])
-
-//     const handleVariantChange = (index, field, value) => {
-//         const updated = [...variants]
-//         updated[index][field] = value
-//         setVariants(updated)
-//     }
-
-//     const addVariant = () => {
-//         setVariants([...variants, { name: '', price: '', factor: '' }])
-//     }
-
-//     const removeVariant = (index) => {
-//         const updated = variants.filter((_, i) => i !== index)
-//         setVariants(updated)
-//     }
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault()
-
-//         const payload = {
-//             name,
-//             hasVariants,
-//             ...(hasVariants
-//                 ? { variants }
-//                 : { price: Number(price), factor: Number(factor) }),
-//         }
-
-//         const res = await fetch(
-//             id ? `/api/calculator/${id}` : `/api/calculator`,
-//             {
-//                 method: id ? 'PUT' : 'POST',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify(payload),
-//             },
-//         )
-
-//         // if (res.ok) {
-//         //     router.push('/calculator') // Redirect or show message
-//         // }
-//     }
-
-//     if (loading) return <p className='p-6 text-center'>Loading...</p>
-
-//     return (
-//         <div className='w-full max-w-3xl mx-auto p-6'>
-//             <form
-//                 onSubmit={handleSubmit}
-//                 className='space-y-6 bg-white shadow-lg rounded-2xl p-8 border'
-//             >
-//                 <h2 className='text-2xl font-bold mb-4'>
-//                     {id ? 'Edit' : 'Create'} Calculator
-//                 </h2>
-
-//                 <div>
-//                     <label className='block mb-1 font-medium'>Name</label>
-//                     <input
-//                         type='text'
-//                         className='w-full border px-4 py-2 rounded'
-//                         value={name}
-//                         onChange={(e) => setName(e.target.value)}
-//                         required
-//                     />
-//                 </div>
-
-//                 <div className='flex items-center gap-4'>
-//                     <label className='font-medium'>Has Variants?</label>
-//                     <input
-//                         type='checkbox'
-//                         checked={hasVariants}
-//                         onChange={() => setHasVariants(!hasVariants)}
-//                         className='w-5 h-5'
-//                     />
-//                 </div>
-
-//                 {!hasVariants && (
-//                     <>
-//                         <div>
-//                             <label className='block mb-1 font-medium'>
-//                                 Price
-//                             </label>
-//                             <input
-//                                 type='number'
-//                                 className='w-full border px-4 py-2 rounded'
-//                                 value={price}
-//                                 onChange={(e) => setPrice(e.target.value)}
-//                                 required
-//                             />
-//                         </div>
-//                         <div>
-//                             <label className='block mb-1 font-medium'>
-//                                 Factor
-//                             </label>
-//                             <input
-//                                 type='number'
-//                                 className='w-full border px-4 py-2 rounded'
-//                                 value={factor}
-//                                 onChange={(e) => setFactor(e.target.value)}
-//                                 required
-//                             />
-//                         </div>
-//                     </>
-//                 )}
-
-//                 {hasVariants && (
-//                     <div className='space-y-4'>
-//                         <label className='block font-medium'>Variants</label>
-//                         {variants.map((variant, index) => (
-//                             <div
-//                                 key={index}
-//                                 className='grid grid-cols-3 gap-3 items-end border p-4 rounded'
-//                             >
-//                                 <input
-//                                     type='text'
-//                                     placeholder='Variant Name'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.name}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'name',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <input
-//                                     type='number'
-//                                     placeholder='Price'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.price}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'price',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <input
-//                                     type='number'
-//                                     placeholder='Factor'
-//                                     className='border px-3 py-2 rounded'
-//                                     value={variant.factor}
-//                                     onChange={(e) =>
-//                                         handleVariantChange(
-//                                             index,
-//                                             'factor',
-//                                             e.target.value,
-//                                         )
-//                                     }
-//                                     required
-//                                 />
-//                                 <button
-//                                     type='button'
-//                                     onClick={() => removeVariant(index)}
-//                                     className='text-red-600 text-sm underline col-span-3'
-//                                 >
-//                                     Remove Variant
-//                                 </button>
-//                             </div>
-//                         ))}
-//                         <button
-//                             type='button'
-//                             onClick={addVariant}
-//                             className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-//                         >
-//                             + Add Variant
-//                         </button>
-//                     </div>
-//                 )}
-
-//                 <button
-//                     type='submit'
-//                     className='w-full bg-green-600 text-white py-2 rounded hover:bg-green-700'
-//                 >
-//                     {id ? 'Update' : 'Create'} Calculator
-//                 </button>
-//             </form>
-//         </div>
-//     )
-// }
-
-
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -495,78 +28,28 @@ export default function CalculatorPage() {
         variants: [],
     })
 
-    
-// `/api/phone-number`
-
     useEffect(() => {
         fetchCalculators()
     }, [])
+
     const fetchCalculators = async () => {
-        const res = await fetch(
-            `/api/calculator`,
-        )
+        const res = await fetch(`/api/calculator`)
         const data = await res.json()
         setCalculators(data)
     }
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault()
-    //     const method = form._id ? 'PATCH' : 'POST'
+    const handleSubmit = async (e) => {
+        e.preventDefault()
 
-    //     const res = await fetch('/api/calculator', {
-    //         method,
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify(form),
-    //     })
+        const method = form._id ? 'PATCH' : 'POST'
 
-    //     if (res.ok) {
-    //         showToast(form._id ? 'Calculator updated!' : 'Calculator added!')
-    //         setForm({
-    //             _id: null,
-    //             name: '',
-    //             hasVariants: false,
-    //             price: '',
-    //             factor: '',
-    //             variants: [],
-    //         })
-    //         fetchCalculators()
-    //     } else {
-    //         const err = await res.json().catch(() => null)
-    //         showToast(err?.message || 'Failed to save', 'error')
-    //     }
-    // }
-
-// const handleDelete = async (id) => {
-//     if (!confirm('Are you sure you want to delete this calculator?')) return
-
-//     const res = await fetch(`/api/calculator?id=${id}`, {
-//         method: 'DELETE',
-//     })
-
-//     if (res.ok) {
-//         showToast('Deleted!')
-//         fetchCalculators() // Refresh the list of calculators
-//     } else {
-//         const err = await res.json()
-//         showToast(err?.message || 'Failed to delete', 'error')
-//     }
-// }
-
-const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(form);
-    
-    const method = form._id ? 'PATCH' : 'POST'
-
-    const res = await fetch(
-        `/api/calculator`,
-        {
+        const res = await fetch(`/api/calculator`, {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
                 form._id
                     ? {
-                          id: form._id, // fix here
+                          id: form._id,
                           name: form.name,
                           hasVariants: form.hasVariants,
                           price: form.price,
@@ -575,52 +58,43 @@ const handleSubmit = async (e) => {
                       }
                     : form,
             ),
-        },
-    )
-
-    if (res.ok) {
-        showToast(form._id ? 'Calculator updated!' : 'Calculator added!')
-        setForm({
-            _id: null,
-            name: '',
-            hasVariants: false,
-            price: '',
-            factor: '',
-            variants: [],
         })
-        fetchCalculators()
-    } else {
-        const err = await res.json().catch(() => null)
-        showToast(err?.message || 'Failed to save', 'error')
+
+        if (res.ok) {
+            showToast(form._id ? 'Calculator updated!' : 'Calculator added!')
+            setForm({
+                _id: null,
+                name: '',
+                hasVariants: false,
+                price: '',
+                factor: '',
+                variants: [],
+            })
+            fetchCalculators()
+        } else {
+            const err = await res.json().catch(() => null)
+            showToast(err?.message || 'Failed to save', 'error')
+        }
     }
-}
 
-const handleDelete = async (id) => {
-    if (!confirm('Are you sure?')) return
+    const handleDelete = async (id) => {
+        if (!confirm('Are you sure?')) return
 
-    const res = await fetch(
-        `/api/calculator`,
-        {
+        const res = await fetch(`/api/calculator`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id }),
-        },
-    )
+        })
 
-    const data = await res.json()
+        const data = await res.json()
 
-    if (res.ok) {
-        showToast('Deleted successfully!')
-        fetchCalculators()
-    } else {
-        showToast(data.message || 'Delete failed', 'error')
+        if (res.ok) {
+            showToast('Deleted successfully!')
+            fetchCalculators()
+        } else {
+            showToast(data.message || 'Delete failed', 'error')
+        }
     }
-}
-
-
-
 
     const handleEdit = (calc) => {
         setForm({
@@ -658,7 +132,7 @@ const handleDelete = async (id) => {
             {/* Form */}
             <form
                 onSubmit={handleSubmit}
-                className='bg-white border shadow p-6 space-y-4 rounded'
+                className='bg-white border shadow p-6 space-y-6 rounded'
             >
                 <h2 className='text-xl font-semibold'>
                     {form._id ? 'Edit Calculator' : 'Add Calculator'}
@@ -670,7 +144,7 @@ const handleDelete = async (id) => {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     required
-                    className='w-full p-2 border rounded'
+                    className='w-full p-3 border rounded'
                 />
 
                 <label className='flex items-center space-x-2'>
@@ -684,9 +158,23 @@ const handleDelete = async (id) => {
                     <span>Has Variants</span>
                 </label>
 
-                {!form.hasVariants && (
-                    <>
+                {/* Non-variant inputs */}
+                <div
+                    className={`${
+                        form.hasVariants
+                            ? 'hidden'
+                            : 'grid grid-cols-1 sm:grid-cols-2 gap-4'
+                    }`}
+                >
+                    <div className='flex flex-col'>
+                        <label
+                            htmlFor='price'
+                            className='mb-1 text-sm font-medium'
+                        >
+                            Price
+                        </label>
                         <input
+                            id='price'
                             type='number'
                             placeholder='Price'
                             value={form.price}
@@ -694,9 +182,18 @@ const handleDelete = async (id) => {
                                 setForm({ ...form, price: e.target.value })
                             }
                             required
-                            className='w-full p-2 border rounded'
+                            className='w-full p-3 border rounded'
                         />
+                    </div>
+                    <div className='flex flex-col'>
+                        <label
+                            htmlFor='factor'
+                            className='mb-1 text-sm font-medium'
+                        >
+                            Factor
+                        </label>
                         <input
+                            id='factor'
                             type='number'
                             placeholder='Factor'
                             value={form.factor}
@@ -704,19 +201,27 @@ const handleDelete = async (id) => {
                                 setForm({ ...form, factor: e.target.value })
                             }
                             required
-                            className='w-full p-2 border rounded'
+                            className='w-full p-3 border rounded'
                         />
-                    </>
-                )}
+                    </div>
+                </div>
 
-                {form.hasVariants && (
-                    <div className='space-y-4 w-full'>
-                        {form.variants.map((variant, index) => (
-                            <div
-                                key={index}
-                                className='w-3/4 grid grid-cols-3 gap-2 items-start'
-                            >
+                {/* Variant inputs */}
+                <div className={`${form.hasVariants ? 'space-y-6' : 'hidden'}`}>
+                    {form.variants.map((variant, index) => (
+                        <div
+                            key={index}
+                            className='grid grid-cols-1 sm:grid-cols-3 gap-4 items-start'
+                        >
+                            <div className='flex flex-col'>
+                                <label
+                                    htmlFor={`variant-name-${index}`}
+                                    className='mb-1 text-sm font-medium'
+                                >
+                                    Variant Name
+                                </label>
                                 <input
+                                    id={`variant-name-${index}`}
                                     type='text'
                                     placeholder='Variant Name'
                                     value={variant.name}
@@ -728,9 +233,18 @@ const handleDelete = async (id) => {
                                         )
                                     }
                                     required
-                                    className='p-2 border rounded'
+                                    className='p-3 border rounded'
                                 />
+                            </div>
+                            <div className='flex flex-col'>
+                                <label
+                                    htmlFor={`variant-price-${index}`}
+                                    className='mb-1 text-sm font-medium'
+                                >
+                                    Price
+                                </label>
                                 <input
+                                    id={`variant-price-${index}`}
                                     type='number'
                                     placeholder='Price'
                                     value={variant.price}
@@ -742,9 +256,18 @@ const handleDelete = async (id) => {
                                         )
                                     }
                                     required
-                                    className='p-2 border rounded'
+                                    className='p-3 border rounded'
                                 />
+                            </div>
+                            <div className='flex flex-col'>
+                                <label
+                                    htmlFor={`variant-factor-${index}`}
+                                    className='mb-1 text-sm font-medium'
+                                >
+                                    Factor
+                                </label>
                                 <input
+                                    id={`variant-factor-${index}`}
                                     type='number'
                                     placeholder='Factor'
                                     value={variant.factor}
@@ -756,30 +279,30 @@ const handleDelete = async (id) => {
                                         )
                                     }
                                     required
-                                    className='p-2 border rounded'
+                                    className='p-3 border rounded'
                                 />
-                                <button
-                                    type='button'
-                                    onClick={() => removeVariant(index)}
-                                    className='text-red-600 text-sm mt-1'
-                                >
-                                    Remove
-                                </button>
                             </div>
-                        ))}
-                        <button
-                            type='button'
-                            onClick={addVariant}
-                            className='bg-gray-200 px-3 py-1 rounded'
-                        >
-                            + Add Variant
-                        </button>
-                    </div>
-                )}
+                            <button
+                                type='button'
+                                onClick={() => removeVariant(index)}
+                                className='text-red-600 text-sm mt-6'
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        type='button'
+                        onClick={addVariant}
+                        className='bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 text-sm'
+                    >
+                        + Add Variant
+                    </button>
+                </div>
 
                 <button
                     type='submit'
-                    className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'
+                    className='bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700'
                 >
                     {form._id ? 'Update' : 'Add'}
                 </button>
@@ -795,9 +318,9 @@ const handleDelete = async (id) => {
                         {calculators.map((calc) => (
                             <div
                                 key={calc._id}
-                                className='p-4 border rounded flex justify-between items-start'
+                                className='p-4 border rounded flex flex-col sm:flex-row justify-between items-start sm:items-center'
                             >
-                                <div>
+                                <div className='mb-4 sm:mb-0'>
                                     <h3 className='font-bold text-lg'>
                                         {calc.name}
                                     </h3>
@@ -816,7 +339,7 @@ const handleDelete = async (id) => {
                                         </p>
                                     )}
                                 </div>
-                                <div className='space-x-2'>
+                                <div className='space-x-4'>
                                     <button
                                         onClick={() => handleEdit(calc)}
                                         className='text-blue-600 hover:underline'

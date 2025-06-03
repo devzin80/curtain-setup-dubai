@@ -1,7 +1,7 @@
 'use client'
-import React from 'react'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+
 const OurRecentWorks = () => {
     const [recentWorks, setRecentWorks] = useState([])
     const [form, setForm] = useState({
@@ -16,7 +16,7 @@ const OurRecentWorks = () => {
     }, [])
 
     const fetchRecentWorks = async () => {
-        const res = await fetch(`/api/recent-works`)
+        const res = await fetch('/api/recent-works')
         const data = await res.json()
         setRecentWorks(data)
     }
@@ -38,8 +38,9 @@ const OurRecentWorks = () => {
 
     const openFilePicker = () => inputRef.current.click()
 
-    const handleFileInput = async (files) => {
+    const handleFileInput = (files) => {
         const file = files[0]
+        if (!file) return
         const reader = new FileReader()
         reader.onloadend = () => {
             setForm((prev) => ({
@@ -62,14 +63,25 @@ const OurRecentWorks = () => {
     const handleDragOver = (e) => e.preventDefault()
 
     const removeImage = () => setForm((prev) => ({ ...prev, image: null }))
-    // /api/our-products
+
     const handleSubmit = async () => {
+        if (!form.location) {
+            showToast('Location is required', 'error')
+            return
+        }
+
+        const body = {
+            _id: form._id,
+            location: form.location,
+            image: form.image ? form.image : null,
+        }
+
         const method = form._id ? 'PATCH' : 'POST'
 
-        const res = await fetch(`/api/recent-works`, {
+        const res = await fetch('/api/recent-works', {
             method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
+            body: JSON.stringify(body),
         })
 
         if (res.ok) {
@@ -81,13 +93,17 @@ const OurRecentWorks = () => {
         }
     }
 
-    const handleEdit = (RecentWork) => {
-        setForm(RecentWork)
+    const handleEdit = (work) => {
+        setForm({
+            _id: work._id,
+            location: work.location,
+            image: work.image || null,
+        })
         showToast('Edit mode enabled')
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this ?')) return
+        if (!confirm('Are you sure you want to delete this?')) return
 
         const res = await fetch(`/api/recent-works?id=${id}`, {
             method: 'DELETE',
@@ -100,6 +116,7 @@ const OurRecentWorks = () => {
             showToast('Failed to delete', 'error')
         }
     }
+
     return (
         <div className='w-[90vw] md:w-[40vw] mx-auto p-6'>
             <h1 className='text-2xl font-bold mb-6 text-center'>
@@ -137,6 +154,7 @@ const OurRecentWorks = () => {
                             hidden
                             onChange={handleFileChange}
                             ref={inputRef}
+                            accept='image/*'
                         />
                     </div>
 
@@ -147,7 +165,7 @@ const OurRecentWorks = () => {
                                 alt={form.image.name}
                                 width={80}
                                 height={80}
-                                className='border rounded'
+                                className='rounded'
                             />
                             <button
                                 onClick={removeImage}
@@ -162,10 +180,10 @@ const OurRecentWorks = () => {
 
                 <button
                     onClick={handleSubmit}
-                    className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block'
+                    className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-auto block disabled:opacity-50'
                     disabled={!form.location || !form.image}
                 >
-                    {form._id ? 'Update ' : 'Upload'}
+                    {form._id ? 'Update' : 'Upload'}
                 </button>
             </div>
 
@@ -206,7 +224,7 @@ const OurRecentWorks = () => {
                                     alt={work.image.name}
                                     width={300}
                                     height={300}
-                                    className='object-cover rounded border'
+                                    className='object-cover rounded'
                                 />
                             )}
                         </div>

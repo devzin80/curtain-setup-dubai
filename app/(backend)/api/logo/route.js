@@ -1,125 +1,155 @@
+import { NextResponse } from 'next/server'
 import { writeFile, unlink } from 'fs/promises'
 import path from 'path'
-import fs from 'fs'
+import { existsSync, mkdirSync } from 'fs'
+import { v4 as uuidv4 } from 'uuid'
 import connectDB from '@/lib/db'
 import Logo from '../../models/logo.model'
-import { NextResponse } from 'next/server'
 
+
+const LOGO_DIR = path.join(process.cwd(), 'public', 'uploads', 'logo')
+if (!existsSync(LOGO_DIR)) {
+    mkdirSync(LOGO_DIR, { recursive: true })
+}
+
+// Helper: save uploaded file to disk
+async function handleLogoUpload(file) {
+    if (!file || typeof file.arrayBuffer !== 'function') return null
+
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const ext = path.extname(file.name)
+    const filename = `${uuidv4()}${ext}`
+    const filePath = path.join(LOGO_DIR, filename)
+
+    await writeFile(filePath, buffer)
+
+    return {
+        name: file.name,
+        url: `/uploads/logo/${filename}`,
+        path: filePath,
+    }
+}
+
+// POST - Upload new logo (replace if exists)
 export async function POST(req) {
     try {
-        const formData = await req.formData()
-        const files = formData.getAll('file')
-        const filesToProcess = files.length > 1 ? files : [files[0]]
+        await connectDB()
 
-        if (!filesToProcess || filesToProcess.length === 0) {
+        const contentType = req.headers.get('content-type') || ''
+        if (!contentType.includes('multipart/form-data')) {
             return NextResponse.json(
-                { error: 'No files uploaded' },
+                { error: 'Invalid content type, multipart/form-data expected' },
                 { status: 400 },
             )
         }
 
-        const logoDir = path.join(process.cwd(), 'uploads', 'logo')
-        if (!fs.existsSync(logoDir)) {
-            fs.mkdirSync(logoDir, { recursive: true })
+        const formData = await req.formData()
+        const file = formData.get('file')
+        if (!file) {
+            return NextResponse.json(
+                { error: 'No file uploaded' },
+                { status: 400 },
+            )
         }
 
-        const uploadedFiles = []
-
-        for (const file of filesToProcess) {
-            const bytes = await file.arrayBuffer()
-            const buffer = Buffer.from(bytes)
-            const ext = file.name.split('.').pop()
-            const filename = file.name.split('.')[0]
-            const filepath = path.join(logoDir, file.name)
-
-            await writeFile(filepath, buffer)
-
-            const fileUrl = `https://curtainsetup.ae/uploads/logo/${filename}.${ext}`
-
-            uploadedFiles.push({ filename, url: fileUrl })
+        const newLogo = await handleLogoUpload(file)
+        if (!newLogo) {
+            return NextResponse.json(
+                { error: 'File upload failed' },
+                { status: 400 },
+            )
         }
 
-        await connectDB()
-        const logoPromises = uploadedFiles.map((file) =>
-            Logo.create({ name: file.filename, url: file.url }),
-        )
-        const newLogos = await Promise.all(logoPromises)
+        // Delete old logo if exists
+        const existing = await Logo.findOne()
+        if (existing) {
+            const oldPath = path.join(process.cwd(), 'public', existing.url)
+            if (existsSync(oldPath)) {
+                await unlink(oldPath)
+            }
+            await Logo.deleteOne({ _id: existing._id })
+        }
 
-        return NextResponse.json({ logos: newLogos }, { status: 200 })
+        const savedLogo = await Logo.create({
+            name: newLogo.name,
+            url: newLogo.url,
+        })
+
+        return NextResponse.json({ logo: savedLogo }, { status: 201 })
     } catch (error) {
-        console.error('Upload error:', error)
-        return NextResponse.json({ error: 'Server error' }, { status: 500 })
+        console.error('POST /api/logo error:', error)
+        return NextResponse.json(
+            { error: 'Failed to upload logo' },
+            { status: 500 },
+        )
     }
 }
 
+// GET - Get current logo
 export async function GET() {
     try {
         await connectDB()
-        const logos = await Logo.find({}).lean()
-        return NextResponse.json({ logos }, { status: 200 })
+        const logo = await Logo.findOne().lean()
+        return NextResponse.json({ logo }, { status: 200 })
     } catch (error) {
-        // console.error('GET error:', error)
-        return NextResponse.json({ error: 'Server error' }, { status: 500 })
+        console.error('GET /api/logo error:', error)
+        return NextResponse.json(
+            { error: 'Failed to fetch logo' },
+            { status: 500 },
+        )
     }
 }
 
+// PATCH - Update logo (replace image)
 export async function PATCH(req) {
     try {
-        const formData = await req.formData()
-        const file = formData.get('file')
-        const logoId = formData.get('_id')
+        await connectDB()
 
-        if (!file || !logoId) {
+        const contentType = req.headers.get('content-type') || ''
+        if (!contentType.includes('multipart/form-data')) {
             return NextResponse.json(
-                { error: 'Missing file or _id' },
+                { error: 'Invalid content type, multipart/form-data expected' },
                 { status: 400 },
             )
         }
 
-        await connectDB()
-        const existingLogo = await Logo.findById(logoId)
-        if (!existingLogo) {
+        const formData = await req.formData()
+        const file = formData.get('file')
+
+        const existing = await Logo.findOne()
+        if (!existing) {
             return NextResponse.json(
-                { error: 'Logo not found' },
+                { error: 'No logo found to update' },
                 { status: 404 },
             )
         }
 
-        const oldFilePath = path.join(
-            process.cwd(),
-            'uploads',
-            existingLogo.url || '',
-        )
-        if (fs.existsSync(oldFilePath)) {
-            await unlink(oldFilePath)
+        if (file) {
+            const newLogo = await handleLogoUpload(file)
+            if (!newLogo) {
+                return NextResponse.json(
+                    { error: 'File upload failed' },
+                    { status: 400 },
+                )
+            }
+
+            // Delete old file
+            const oldPath = path.join(process.cwd(), 'public', existing.url)
+            if (existsSync(oldPath)) {
+                await unlink(oldPath)
+            }
+
+            existing.name = newLogo.name
+            existing.url = newLogo.url
         }
 
-        const bytes = await file.arrayBuffer()
-        const buffer = Buffer.from(bytes)
-        const { name: filename, ext } = path.parse(file.name)
-        
-        const newFilePath = path.join(
-            process.cwd(),
-            'uploads',
-            'logo',
-            `${filename}${ext}`,
-        )
-
-        const logoDir = path.join(process.cwd(), 'public', 'logo')
-        if (!fs.existsSync(logoDir)) {
-            fs.mkdirSync(logoDir, { recursive: true })
-        }
-
-        await writeFile(newFilePath, buffer)
-
-        const newUrl = `https://curtainsetup.ae/uploads/logo/${filename}${ext}`
-        existingLogo.url = newUrl
-        existingLogo.name = filename
-        await existingLogo.save()
-
-        return NextResponse.json({ logo: existingLogo }, { status: 200 })
+        await existing.save()
+        return NextResponse.json({ logo: existing }, { status: 200 })
     } catch (error) {
-        console.error('Update error:', error)
-        return NextResponse.json({ error: 'Server error' }, { status: 500 })
+        // console.error('PATCH /api/logo error:', error)
+        return NextResponse.json(
+            { error: 'Failed to update logo' },
+            { status: 500 },
+        )
     }
 }

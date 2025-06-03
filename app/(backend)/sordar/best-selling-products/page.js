@@ -111,7 +111,7 @@ const BestSellingProducts = () => {
         })
     }
 
-    // Use FormData for file uploads (recommended for images)
+
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
         const formData = new FormData()
@@ -119,7 +119,16 @@ const BestSellingProducts = () => {
         formData.append('slug', form.slug)
         formData.append('category', form.category)
         formData.append('description', form.description)
-        if (form._id) formData.append('_id', form._id)
+
+        // Only include previously uploaded images in existingImages
+        const existingImages = (form.images || []).filter((img) =>
+            img.url?.startsWith('/uploads'),
+        )
+        if (form._id) {
+            formData.append('_id', form._id)
+            formData.append('existingImages', JSON.stringify(existingImages))
+        }
+
         selectedFiles.forEach((file) => formData.append('files', file))
 
         const res = await fetch(`/api/best-selling-products`, {
@@ -143,6 +152,8 @@ const BestSellingProducts = () => {
             showToast('Failed to save product', 'error')
         }
     }
+    
+    
 
     const handleEdit = (product) => {
         setForm(product)

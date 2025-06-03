@@ -42,7 +42,6 @@ const PrivacyPolicy = () => {
             }
 
             if (!contentId) {
-                // No content in DB – Create new
                 await fetch(`/api/privacy-policy`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -50,7 +49,6 @@ const PrivacyPolicy = () => {
                 })
                 setMessage('Privacy policy created!')
             } else {
-                // Content exists – Update existing
                 await fetch(`/api/privacy-policy`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -66,26 +64,31 @@ const PrivacyPolicy = () => {
     }
 
     return (
-        <div className='w-full max-w-4xl m-10 h-[50vh]'>
-            <form onSubmit={handleSubmit}>
-                <Editor
-                    content={content}
-                    onChange={setContent}
-                />
+        <div className='w-full max-w-4xl mx-auto my-10 px-4 sm:px-6 lg:px-8 min-h-[50vh] flex flex-col'>
+            <form
+                onSubmit={handleSubmit}
+                className='flex flex-col flex-grow'
+            >
+                <div className='flex-grow min-h-[300px] sm:min-h-[400px] overflow-auto border rounded-lg shadow-sm'>
+                    <Editor
+                        content={content}
+                        onChange={setContent}
+                    />
+                </div>
+
                 <button
                     type='submit'
-                    className='bg-blue-500 text-white px-4 py-2 mt-2'
                     disabled={!content || loading}
+                    className='mt-4 self-start bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition disabled:opacity-50'
                 >
                     {loading ? 'Saving...' : contentId ? 'Update' : 'Save'}
                 </button>
+
                 {message && (
-                    <div className='mt-2 text-green-700 font-medium'>
-                        {message}
-                    </div>
+                    <p className='mt-3 text-green-600 font-medium'>{message}</p>
                 )}
                 {error && (
-                    <div className='mt-2 text-red-600 font-medium'>{error}</div>
+                    <p className='mt-3 text-red-600 font-medium'>{error}</p>
                 )}
             </form>
         </div>

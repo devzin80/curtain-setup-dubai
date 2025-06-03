@@ -6,6 +6,7 @@ const Product = async ({ params }) => {
     const { product } = await params
 
     const singleProduct = await getProduct(product)
+    console.log('I am from single product',singleProduct)
 
     // return (
     //     <div>
