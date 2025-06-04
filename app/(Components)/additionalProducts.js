@@ -11,8 +11,8 @@ const AdditionalProducts = async () => {
             <h1 className='font-bold text-3xl text-black my-10 text-center'>
                 Elevate Every Corner
             </h1>
-            <div className=' flex justify-center items-center'>
-                <div className='w-[80vw] flex justify-start items-center gap-12 my-12 flex-wrap'>
+            <div className='flex justify-center'>
+                <div className='w-[80vw] flex flex-wrap justify-center sm:justify-start gap-6 sm:gap-12'>
                     {Array.isArray(products) && products.length > 0 ? (
                         products.map((product, index) => (
                             <div key={product._id || product.slug || index}>
