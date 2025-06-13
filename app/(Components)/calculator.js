@@ -252,7 +252,8 @@ export default function Calculator() {
     const selectedVariant = selectedCalculator?.variants?.find(
         (v) => v._id === selectedVariantId,
     )
-
+//  total value not fixing . Have to fixe it
+//  problem in area
     const area = width * height
     const factor = selectedVariant?.factor ?? selectedCalculator?.factor ?? 1
     const pricePerSqm = Number(

@@ -5,7 +5,8 @@ import React from 'react'
 const Media = ({ media }) => {
     return (
         <Link
-            href={media.url}
+             href={media.url.startsWith('http') ? media.url : `https://${media.url}`}
+            // href={media.url}
             target='_blank'
             rel='noopener noreferrer'
         >
