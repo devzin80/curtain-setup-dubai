@@ -39,7 +39,7 @@ const Header = async () => {
                     <Link href={'/our-products'}>Our Products</Link>
                     <Link href={'/curtain-cost-estimator'}>Get Estimate</Link>
                     <Link href={'/book-a-free-visit'}>
-                        <div className='border-blue-400 rounded-xl border-2 px-4 py-2.5 text-blue-400'>
+                        <div className='border-orange-600  border-2 px-4 py-2.5 text-white bg-orange-600 font-medium rounded-lg'>
                             Book A Free Visit
                         </div>
                     </Link>

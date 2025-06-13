@@ -2,6 +2,7 @@ import { Montserrat } from 'next/font/google'
 import './globals.css'
 import Header from './header'
 import Footer from './footer'
+import WhatsAppFloatingButton from './(Components)/whatsapp'
 // export const dynamic = 'force-dynamic'
 
 const montserrat = Montserrat({
@@ -11,7 +12,7 @@ const montserrat = Montserrat({
 })
 
 export const metadata = {
-    title: 'Urban Interiors Dubai',
+    title: 'Curtain Setup',
     description:
         'An authentic, reliable and cost-friendly website for buying curtains ',
 }
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
         <html lang='en'>
             <body className={`${montserrat.className} antialiased`}>
                 <Header />
+                <WhatsAppFloatingButton />
                 {children}
                 <Footer />
             </body>

@@ -1,8 +1,7 @@
-
-
 import Image from 'next/image'
 import React from 'react'
 import Link from 'next/link'
+import { FaWhatsapp } from 'react-icons/fa'
 import {
     footerLogo,
     getAddress,
@@ -14,8 +13,8 @@ import Media from './(Components)/media'
 
 const Footer = async () => {
     const logo = await footerLogo()
-    console.log(logo, 'Footer Logo');
-    
+    console.log(logo, 'Footer Logo')
+
     const socialMedias = await getSocialMedia()
     const address = await getAddress()
     const phoneNumber = await getNumber()
@@ -28,7 +27,7 @@ const Footer = async () => {
                 <div className='flex flex-col items-start gap-6 flex-shrink-0 w-full md:w-auto'>
                     {logo?.url && (
                         <Image
-                            src={logo.url }
+                            src={logo.url}
                             alt={logo.name}
                             width={240}
                             height={60}
@@ -88,7 +87,7 @@ const Footer = async () => {
                 </nav>
 
                 {/* Contact Section */}
-                <div className='border-t md:border-t-0 md:border-l-4 border-green-600 pt-6 md:pt-0 md:px-8 w-full md:w-auto text-left'>
+                <div className='border-t md:border-t-0 md:border-l-3 border-orange-600 pt-6 md:pt-0 md:px-8 w-full md:w-auto text-left'>
                     <p className='text-lg md:text-xl font-semibold mb-4'>
                         We are in
                     </p>
@@ -136,13 +135,7 @@ const Footer = async () => {
                     </div>
 
                     <div className='flex items-center gap-3 mb-4 max-w-full'>
-                        <Image
-                            src='/whatsapp.svg'
-                            alt='Whatsapp Icon'
-                            width={24}
-                            height={24}
-                            priority
-                        />
+                        <FaWhatsapp size={24} className='text-green-500' />
                         <p className='text-base md:text-lg font-semibold break-words max-w-[250px] md:max-w-full'>
                             {phoneNumber?.phoneNumber || ''}
                         </p>

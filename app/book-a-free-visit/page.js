@@ -4,7 +4,7 @@ import BookAVisitForm from '../(Components)/visit'
 const BookAFreeVisit = () => {
     return (
         // <div>BookAFreeVisit</div>
-        <div className='my-10'>
+        <div className=''>
             <BookAVisitForm />
         </div>
     )

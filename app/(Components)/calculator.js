@@ -7,8 +7,8 @@ export default function Calculator() {
     const [calculators, setCalculators] = useState([])
     const [selectedCalculatorId, setSelectedCalculatorId] = useState('')
     const [selectedVariantId, setSelectedVariantId] = useState('')
-    const [width, setWidth] = useState(1)
-    const [height, setHeight] = useState(1)
+    const [width, setWidth] = useState('')
+    const [height, setHeight] = useState('')
     const [error, setError] = useState('')
 
     useEffect(() => {
@@ -71,14 +71,15 @@ export default function Calculator() {
         (v) => v._id === selectedVariantId,
     )
 
-    // Custom area logic:
-    // If calculator has variants => area = (width * factor) * height
-    // else area = width * height
     const factor = selectedVariant?.factor ?? selectedCalculator?.factor ?? 1
+    const numericWidth = parseFloat(width) || 0
+    const numericHeight = parseFloat(height) || 0
+
     const effectiveWidth = selectedCalculator?.hasVariants
-        ? width * factor
-        : width
-    const area = effectiveWidth * height
+        ? numericWidth * factor
+        : numericWidth
+
+    const area = effectiveWidth * numericHeight
 
     const pricePerSqm = Number(
         selectedVariant?.price ?? selectedCalculator?.price ?? 0,
@@ -88,18 +89,18 @@ export default function Calculator() {
 
     return (
         <div className='max-w-xl mx-auto p-8 m-10 bg-white rounded-xl shadow-lg'>
-            <h1 className='text-center text-3xl font-bold mb-8 text-blue-700'>
+            <h1 className='text-center text-3xl font-bold mb-8 text-orange-600'>
                 Price Calculator
             </h1>
             {error && <p className='text-red-500 mb-4 text-center'>{error}</p>}
 
-            <label className='block mb-2 font-semibold text-blue-900'>
+            <label className='block mb-2 font-semibold text-orange-600'>
                 Select Product
             </label>
             <select
                 value={selectedCalculatorId}
                 onChange={onCalculatorChange}
-                className='w-full mb-6 p-3 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                className='w-full mb-6 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-gray-50'
             >
                 {calculators.map((calc) => (
                     <option
@@ -113,7 +114,7 @@ export default function Calculator() {
 
             {selectedCalculator?.hasVariants && (
                 <>
-                    <label className='block mb-2 font-semibold text-blue-900'>
+                    <label className='block mb-2 font-semibold text-orange-600'>
                         Select Style
                     </label>
                     <div className='flex flex-wrap gap-4 mb-6'>
@@ -124,10 +125,10 @@ export default function Calculator() {
                                     key={variant._id}
                                     type='button'
                                     onClick={() => onVariantClick(variant._id)}
-                                    className={`flex-1 min-w-[120px] p-4 rounded-lg font-medium border-2 transition ${
+                                    className={`flex-1 min-w-[120px] p-4 rounded-lg font-medium border transition ${
                                         isSelected
-                                            ? 'bg-blue-600 text-white border-blue-700 scale-105'
-                                            : 'bg-white text-blue-800 border-blue-300 hover:border-blue-500 hover:bg-blue-50'
+                                            ? 'bg-orange-600 text-white  scale-105'
+                                            : 'bg-white text-black  hover:border-black '
                                     }`}
                                 >
                                     <div>{variant.name}</div>
@@ -136,7 +137,7 @@ export default function Calculator() {
                                         <span className='font-semibold'>
                                             {variant.price} AED
                                         </span>{' '}
-                                        | Factor:{' '}
+                                        | Curtain count:{' '}
                                         <span className='font-semibold'>
                                             {variant.factor}
                                         </span>
@@ -150,7 +151,7 @@ export default function Calculator() {
 
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8'>
                 <div>
-                    <label className='block mb-2 font-semibold text-blue-900'>
+                    <label className='block mb-2 font-semibold text-orange-800'>
                         Width (m)
                     </label>
                     <input
@@ -158,12 +159,12 @@ export default function Calculator() {
                         min='0.1'
                         step='0.01'
                         value={width}
-                        onChange={(e) => setWidth(Number(e.target.value))}
-                        className='w-full p-3 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        onChange={(e) => setWidth(e.target.value)}
+                        className='w-full p-3 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black border border-black'
                     />
                 </div>
                 <div>
-                    <label className='block mb-2 font-semibold text-blue-900'>
+                    <label className='block mb-2 font-semibold text-orange-800'>
                         Height (m)
                     </label>
                     <input
@@ -171,20 +172,20 @@ export default function Calculator() {
                         min='0.1'
                         step='0.01'
                         value={height}
-                        onChange={(e) => setHeight(Number(e.target.value))}
-                        className='w-full p-3 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        onChange={(e) => setHeight(e.target.value)}
+                        className='w-full p-3 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black border border-black'
                     />
                 </div>
             </div>
 
             <div className='text-center'>
-                <p className='text-2xl font-bold text-blue-700 mb-2'>
+                <p className='text-2xl font-bold text-black mb-2'>
                     Total:{' '}
-                    <span className='text-blue-900'>
+                    <span className='text-black'>
                         {totalPrice.toFixed(2)} AED
                     </span>
                 </p>
-                <p className='text-blue-800'>
+                <p className='text-black'>
                     Area:{' '}
                     <span className='font-semibold'>{area.toFixed(2)} m²</span>
                 </p>
