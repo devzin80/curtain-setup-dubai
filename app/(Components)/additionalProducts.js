@@ -12,7 +12,7 @@ const AdditionalProducts = async () => {
                 Elevate Every Corner
             </h1>
             <div className='flex justify-center'>
-                <div className='w-[80vw] flex flex-wrap justify-center sm:justify-start gap-6 sm:gap-12'>
+                <div className='w-[80vw] flex flex-wrap justify-center gap-6 sm:gap-12'>
                     {Array.isArray(products) && products.length > 0 ? (
                         products.map((product, index) => (
                             <div key={product._id || product.slug || index}>

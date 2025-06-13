@@ -31,7 +31,7 @@ const WhyUs = async () => {
 
     return (
         <section className='my-10 px-4 md:px-8'>
-            <h1 className='text-2xl sm:text-3xl md:text-4xl text-center font-bold text-blue-700 mt-16 mb-10'>
+            <h1 className='text-2xl sm:text-3xl md:text-4xl text-center font-bold text-black mt-16 mb-10'>
                 Why We Are Trusted
             </h1>
             <div className='flex flex-col gap-16 items-center'>

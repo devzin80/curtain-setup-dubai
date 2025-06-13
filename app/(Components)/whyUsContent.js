@@ -89,13 +89,13 @@ const Content = ({ content, index }) => {
                             src={content.image.url}
                             alt={content.image.name || 'Why Us Image'}
                             width={600}
-                            height={450}
-                            className='object-cover rounded-2xl w-full h-[250px] sm:h-[350px] md:h-[450px]'
+                            height={500} // exact 6:5 ratio
+                            className='object-cover rounded-2xl w-full aspect-[6/5]'
                         />
                     )}
                 </motion.div>
                 <div className='w-full md:w-1/2 text-left px-2 md:px-6'>
-                    <h2 className='text-xl sm:text-2xl md:text-3xl font-semibold text-blue-800 mb-4'>
+                    <h2 className='text-xl sm:text-2xl md:text-3xl font-semibold text-[#FF6F52] mb-4'>
                         {content.title}
                     </h2>
                     <p className='text-sm sm:text-base md:text-lg text-gray-700 mb-6 text-justify'>
@@ -111,7 +111,7 @@ const Content = ({ content, index }) => {
                                     : '/curtain-cost-estimator'
                             }
                         >
-                            <div className='border-blue-500 rounded-xl border-2 px-4 py-2 text-blue-500 hover:bg-blue-50 inline-block text-sm sm:text-base font-medium'>
+                            <div className=' px-4 py-3 rounded text-white bg-orange-600 inline-block text-sm sm:text-base font-medium'>
                                 {content.button === 'free-visit'
                                     ? 'Book A Free Visit'
                                     : 'Get Estimate'}

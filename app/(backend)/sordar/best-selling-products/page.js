@@ -111,7 +111,6 @@ const BestSellingProducts = () => {
         })
     }
 
-
     const handleSubmit = async () => {
         const method = form._id ? 'PATCH' : 'POST'
         const formData = new FormData()
@@ -120,7 +119,6 @@ const BestSellingProducts = () => {
         formData.append('category', form.category)
         formData.append('description', form.description)
 
-        // Only include previously uploaded images in existingImages
         const existingImages = (form.images || []).filter((img) =>
             img.url?.startsWith('/uploads'),
         )
@@ -152,8 +150,6 @@ const BestSellingProducts = () => {
             showToast('Failed to save product', 'error')
         }
     }
-    
-    
 
     const handleEdit = (product) => {
         setForm(product)
@@ -180,13 +176,13 @@ const BestSellingProducts = () => {
     }
 
     return (
-        <div className='w-[30vw] mx-auto p-6'>
+        <div className='max-w-4xl w-full mx-auto p-4 sm:p-6'>
             <h1 className='text-2xl font-bold mb-6 text-center'>
                 Best Selling Products
             </h1>
 
             {/* FORM */}
-            <div className=' bg-white shadow shadow-sky-600 rounded p-4 space-y-4 mb-10'>
+            <div className='bg-white shadow shadow-sky-600 rounded p-4 space-y-4 mb-10'>
                 <div>
                     <label className='block font-medium'>Name</label>
                     <input
@@ -224,7 +220,7 @@ const BestSellingProducts = () => {
                             Select a category
                         </option>
                         <option value='curtains'>Curtains</option>
-                        <option value='others'>others</option>
+                        <option value='others'>Others</option>
                     </select>
                 </div>
 
@@ -301,33 +297,37 @@ const BestSellingProducts = () => {
 
             {/* PRODUCT LIST */}
             <div>
-                <h1 className='text-3xl font-bold text-center m-10'>
+                <h1 className='text-3xl font-bold text-center mb-10'>
                     Product List
                 </h1>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
                     {products?.map((product) => (
                         <div
                             key={product._id}
                             className='bg-white shadow p-4 rounded space-y-2'
                         >
-                            <div className='flex justify-between items-center gap-2'>
+                            <div className='flex justify-between items-center gap-2 flex-wrap'>
                                 <h2 className='font-semibold text-lg'>
                                     {product.name}
                                 </h2>
-                                <button
-                                    onClick={() => handleEdit(product)}
-                                    className='text-sm text-blue-600 underline'
-                                    aria-label='Edit product'
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(product._id)}
-                                    className='text-sm text-blue-600 underline'
-                                    aria-label='Delete product'
-                                >
-                                    Delete
-                                </button>
+                                <div className='flex gap-2 flex-shrink-0'>
+                                    <button
+                                        onClick={() => handleEdit(product)}
+                                        className='text-sm text-blue-600 underline'
+                                        aria-label='Edit product'
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleDelete(product._id)
+                                        }
+                                        className='text-sm text-blue-600 underline'
+                                        aria-label='Delete product'
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                             <p className='text-sm text-gray-600'>
                                 {product.category}
