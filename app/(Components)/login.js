@@ -40,6 +40,7 @@ export default function LoginPage() {
 
             showToast('Login successful!', 'success')
             router.refresh()
+            router.push('/sordar') // Redirect to dashboard or home page after login
             // Optional: redirect user
         } catch (err) {
             showToast(err.message || 'Login failed', 'error') // <- Toast for invalid login
