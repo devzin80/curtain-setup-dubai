@@ -26,6 +26,9 @@ const seoSchema = new mongoose.Schema(
         locale: { type: String, default: 'en' },
         region: { type: String }, // e.g., "US", "FR"
 
+        // ✅ Focus Keyword (added at top-level)
+        focusKeyword: { type: String },
+
         // Standard SEO
         title: String,
         description: String,

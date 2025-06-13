@@ -11,11 +11,7 @@ const montserrat = Montserrat({
     display: 'swap',
 })
 
-export const metadata = {
-    title: 'Curtain Setup',
-    description:
-        'An authentic, reliable and cost-friendly website for buying curtains ',
-}
+
 
 export default function RootLayout({ children }) {
     return (

@@ -43,6 +43,10 @@ const sidebar = [
         name: 'SEO',
         Children: [{ name: 'SEO', link: '/sordar/seo' }],
     },
+    {
+        name: 'User Management',
+        Children: [{ name: 'User', link: '/sordar/user' }],
+    },
 ]
 
 const SidebarItem = ({ item, level = 0, onLinkClick }) => {

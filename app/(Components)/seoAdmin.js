@@ -11,6 +11,7 @@ export default function SeoAdmin({ routes }) {
         title: '',
         description: '',
         canonicalUrl: '',
+        focusKeyword: '',
         alternateLocales: [],
         metaTags: {
             keywords: [],
@@ -108,6 +109,7 @@ export default function SeoAdmin({ routes }) {
             locale: 'en',
             region: '',
             title: '',
+            focusKeyword: '',
             description: '',
             canonicalUrl: '',
             alternateLocales: [],
@@ -683,6 +685,17 @@ export default function SeoAdmin({ routes }) {
                             className='w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                             rows={3}
                             placeholder='SEO description for this page'
+                        />
+                    </div>
+                    <div>
+                        <label className='block font-medium'>Focus Keyword</label>
+                        <textarea
+                            name='focusKeyword'
+                            value={form.focusKeyword || ''}
+                            onChange={handleChange}
+                            className='w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            rows={3}
+                            placeholder='SEO Focus keyword for this page'
                         />
                     </div>
 
@@ -1879,7 +1892,7 @@ export default function SeoAdmin({ routes }) {
                                     ? 'bg-gray-400 cursor-not-allowed'
                                     : mode === 'edit'
                                     ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                                    : 'bg-blue-600hover:bg-blue-700 text-white'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                             }`}
                         >
                             {loading

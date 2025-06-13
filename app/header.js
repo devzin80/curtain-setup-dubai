@@ -36,6 +36,7 @@ const Header = async () => {
                 {/* Navigation Here */}
 
                 <nav className='hidden md:flex items-center gap-10 text-xl font-semibold'>
+                    
                     <Link href={'/our-products'}>Our Products</Link>
                     <Link href={'/curtain-cost-estimator'}>Get Estimate</Link>
                     <Link href={'/book-a-free-visit'}>

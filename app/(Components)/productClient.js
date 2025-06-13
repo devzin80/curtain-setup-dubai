@@ -37,7 +37,7 @@ const ProductClient = ({ product }) => {
                                     onClick={() => setMainImage(img)}
                                     className={`border-2 rounded-md overflow-hidden w-[70px] h-[70px] ${
                                         mainImage.url === img.url
-                                            ? 'border-blue-500'
+                                            ? 'border-orange-600'
                                             : 'border-gray-300'
                                     }`}
                                 >
@@ -61,9 +61,9 @@ const ProductClient = ({ product }) => {
                         <p className='text-base sm:text-lg text-justify'>
                             {product.description}
                         </p>
-                        <Link href='/book-a-free-visit'>
-                            <div className='mt-8 text-center rounded-xl border-2 px-4 py-3 bg-blue-500 text-white font-semibold text-lg sm:text-xl'>
-                                Book A Free Visit
+                        <Link href='/curtain-cost-estimator'>
+                            <div className='mt-8 text-center rounded-xl border-2 px-4 py-3 bg-orange-600 text-white font-semibold text-lg sm:text-xl'>
+                                Get Estimate
                             </div>
                         </Link>
                     </div>
@@ -78,7 +78,7 @@ const ProductClient = ({ product }) => {
 
                 <div className='flex flex-wrap justify-center gap-6 text-base sm:text-xl'>
                     {/* Step 1 */}
-                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-sky-500'>
+                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-orange-600'>
                         <h3 className='font-bold text-gray-700 text-center my-5'>
                             1. Your Product
                         </h3>
@@ -89,7 +89,7 @@ const ProductClient = ({ product }) => {
                     </div>
 
                     {/* Step 2 */}
-                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-sky-500'>
+                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-orange-600'>
                         <h3 className='font-bold text-gray-700 text-center my-5'>
                             2. Your Fabrics
                         </h3>
@@ -100,7 +100,7 @@ const ProductClient = ({ product }) => {
                     </div>
 
                     {/* Step 3 */}
-                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-sky-500'>
+                    <div className='w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] mb-4 p-4 bg-white rounded-md shadow-2xl shadow-orange-600'>
                         <h3 className='font-bold text-gray-700 text-center my-5'>
                             3. That&apos;s It!
                         </h3>
@@ -113,7 +113,7 @@ const ProductClient = ({ product }) => {
 
                 {/* Call to Action */}
                 <Link href='/book-a-free-visit'>
-                    <div className='max-w-sm sm:max-w-xl my-12 text-center rounded-xl border-2 px-4 py-5 bg-blue-500 mx-auto text-lg sm:text-xl font-semibold text-white'>
+                    <div className='max-w-sm sm:max-w-xl my-12 text-center rounded-xl border-2 px-4 py-5 bg-orange-500 mx-auto text-lg sm:text-xl font-semibold text-white'>
                         Book A Free Visit
                     </div>
                 </Link>

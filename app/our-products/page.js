@@ -2,7 +2,11 @@ import { getOurProducts } from '@/lib/actions/dataFetch'
 import React from 'react'
 import OurProducts from '../(Components)/ourProducts'
 import BestSellingProducts from '../(Components)/bestSelling'
+import { getSeoData } from '@/lib/seodata'
 
+export async function generateMetadata() {
+    return getSeoData({ page: 'our-products' })
+}
 const Product = async () => {
     const ourProducts = await getOurProducts()
 

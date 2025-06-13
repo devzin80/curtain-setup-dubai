@@ -1,18 +1,26 @@
-import { Montserrat } from 'next/font/google'
+
 import AdminSidebar from '../../(Components)/adminSidebar'
-// export const dynamic = 'force-dynamic'
-const montserrat = Montserrat({
-    subsets: ['latin'],
-    variable: '--font-montserrat',
-    display: 'swap',
-})
+import { cookies } from 'next/headers'
+import LoginPage from '@/app/(Components)/login'
 export default function RootLayout({ children }) {
+    const cookieStore = cookies()
+    const token = cookieStore.get('token') 
+
+    const isLoggedIn = !!token
     return (
-        <div className='flex  bg-gray-50 text-gray-900 min-h-screen'>
-            <div className='hidden md:block'>
-                <AdminSidebar />
-            </div>
-            {children}
-        </div>
+        <>
+            {isLoggedIn ? (
+                <div className='flex bg-gray-50 text-gray-900 min-h-screen'>
+                    <div className='hidden md:block'>
+                        <AdminSidebar />
+                    </div>
+                    <div className='flex-1'>{children}</div>
+                </div>
+            ) : (
+                <LoginPage />
+            )}
+        </>
+        
+        
     )
 }

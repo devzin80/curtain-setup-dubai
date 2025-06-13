@@ -54,14 +54,18 @@ const LogoUploader = () => {
     }
 
     return (
-        <div className='w-[30vw] mx-auto bg-white p-6 rounded shadow'>
-            <h2 className='text-xl font-bold mb-4 text-center'>Upload Logo</h2>
+        <div className='w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-2xl shadow-md'>
+            <h2 className='text-lg sm:text-xl font-bold mb-4 text-center'>
+                Upload Logo
+            </h2>
 
             <div
-                className='w-full p-6 border-2 border-dashed rounded-md text-center cursor-pointer hover:border-blue-600'
+                className='w-full p-4 sm:p-6 border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer hover:border-orange-600 transition'
                 onClick={openFilePicker}
             >
-                <p className='text-gray-600'>Click to upload or replace logo</p>
+                <p className='text-sm sm:text-base text-gray-600'>
+                    Click to upload or replace logo
+                </p>
                 <input
                     type='file'
                     hidden
@@ -78,14 +82,18 @@ const LogoUploader = () => {
                         alt={logo.name}
                         width={120}
                         height={120}
-                        className='mx-auto border rounded'
+                        className='mx-auto border rounded-lg'
                     />
-                    <p className='text-sm text-gray-500 mt-1'>{logo.name}</p>
+                    <p className='text-sm text-gray-500 mt-2 truncate'>
+                        {logo.name}
+                    </p>
                 </div>
             )}
 
             {uploading && (
-                <p className='mt-4 text-blue-600 text-center'>Uploading...</p>
+                <p className='mt-4 text-blue-600 text-center text-sm'>
+                    Uploading...
+                </p>
             )}
         </div>
     )
