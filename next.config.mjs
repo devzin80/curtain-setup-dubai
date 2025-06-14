@@ -7,14 +7,14 @@ const nextConfig = {
         },
     },
     images: {
-        disableStaticImages: true,
-        unoptimized: true,
+        // disableStaticImages: true,
+        
        // Disable Next.js image optimization
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: '**.curtainsetup.ae',
-                pathname: '/uploads/**',
+                hostname: 'curtainsetup.ae',
+                pathname: '/**',
             },
         ],
     },

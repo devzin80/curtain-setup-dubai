@@ -8,11 +8,11 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { MdHome } from 'react-icons/md'
 import { decodeToken } from '@/lib/auth'
-import { set } from 'mongoose'
+
 
 const MobileNav = () => {
     const [role, setRole] = useState(null)
-    const [refresh, setRefresh] = useState(false)
+    
     const [isOpen, setIsOpen] = useState(false)
  
     const pathname = usePathname()
@@ -23,12 +23,12 @@ const MobileNav = () => {
         
         // const role = decodeToken(token?.value) || ''
         setRole(role)
-        setRefresh((prev) => !prev)
+        
     }, [pathname])
 
     const toggleMenu = () => setIsOpen((prev) => !prev)
     const closeMenu = () => setIsOpen(false)
-    if(!refresh) return <></>
+    
     return (
         <div className='md:hidden relative z-50'>
             {!isOpen && (

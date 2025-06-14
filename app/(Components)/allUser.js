@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const roles = ['user','admin', 'developer']
+const roles = ['user', 'admin', 'developer']
 
 export default function UserManager() {
     const [users, setUsers] = useState([])
@@ -72,16 +72,16 @@ export default function UserManager() {
     }
 
     return (
-        <div className='max-w-5xl mx-auto px-4 py-10 space-y-10'>
+        <div className='max-w-5xl mx-auto px-2 sm:px-4 py-6 sm:py-10 space-y-8 sm:space-y-10'>
             {/* Form Card */}
-            <div className='bg-white border border-orange-100 rounded-2xl shadow-xl p-8'>
-                <h2 className='text-2xl font-bold text-orange-600 mb-6'>
+            <div className='bg-white border border-orange-100 rounded-2xl shadow-xl p-4 sm:p-8'>
+                <h2 className='text-xl sm:text-2xl font-bold text-orange-600 mb-4 sm:mb-6'>
                     {editingId ? 'Update User' : 'Add New User'}
                 </h2>
 
                 <form
                     onSubmit={handleSubmit}
-                    className='grid grid-cols-1 md:grid-cols-3 gap-6'
+                    className='grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-3'
                 >
                     <input
                         type='email'
@@ -90,7 +90,7 @@ export default function UserManager() {
                         placeholder='Email'
                         value={formData.email}
                         onChange={handleChange}
-                        className='input-style'
+                        className='border border-black rounded-lg px-3 sm:px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm'
                     />
                     <input
                         type='password'
@@ -99,13 +99,13 @@ export default function UserManager() {
                         required={!editingId}
                         value={formData.password}
                         onChange={handleChange}
-                        className='input-style'
+                        className='border border-black rounded-lg px-3 sm:px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm'
                     />
                     <select
                         name='role'
                         value={formData.role}
                         onChange={handleChange}
-                        className='input-style'
+                        className='border border-black rounded-lg px-3 sm:px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm'
                     >
                         {roles.map((r) => (
                             <option
@@ -117,10 +117,10 @@ export default function UserManager() {
                         ))}
                     </select>
 
-                    <div className='md:col-span-3 text-right'>
+                    <div className='sm:col-span-3 text-right'>
                         <button
                             type='submit'
-                            className='bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition'
+                            className='w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition'
                         >
                             {editingId ? 'Update User' : 'Add User'}
                         </button>
@@ -129,18 +129,20 @@ export default function UserManager() {
             </div>
 
             {/* User List Card */}
-            <div className='bg-white border border-gray-100 rounded-2xl shadow-md p-6'>
-                <h2 className='text-xl font-semibold text-gray-800 mb-4'>
+            <div className='bg-white border border-gray-100 rounded-2xl shadow-md p-4 sm:p-6'>
+                <h2 className='text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4'>
                     User List
                 </h2>
 
-                <div className='overflow-x-auto'>
+                <div className='w-full min-w-0 overflow-x-auto'>
                     <table className='w-full text-sm border-collapse'>
                         <thead>
                             <tr className='bg-orange-50 text-orange-700 text-left'>
-                                <th className='p-3'>Email</th>
-                                <th className='p-3'>Role</th>
-                                <th className='p-3 text-right'>Actions</th>
+                                <th className='p-2 sm:p-3'>Email</th>
+                                <th className='p-2 sm:p-3'>Role</th>
+                                <th className='p-2 sm:p-3 text-right'>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,14 +152,16 @@ export default function UserManager() {
                                         key={user._id}
                                         className='border-t hover:bg-orange-50/20'
                                     >
-                                        <td className='p-3'>{user.email}</td>
-                                        <td className='p-3 capitalize'>
+                                        <td className='p-2 sm:p-3 break-words max-w-[120px] sm:max-w-none'>
+                                            {user.email}
+                                        </td>
+                                        <td className='p-2 sm:p-3 capitalize'>
                                             {user.role}
                                         </td>
-                                        <td className='p-3 text-right space-x-2'>
+                                        <td className='p-2 sm:p-3 text-right flex flex-col gap-2 sm:flex-row sm:justify-end sm:items-center sm:gap-2'>
                                             <button
                                                 onClick={() => handleEdit(user)}
-                                                className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-md transition'
+                                                className='bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-1 rounded-md transition text-xs sm:text-sm'
                                             >
                                                 Edit
                                             </button>
@@ -165,7 +169,7 @@ export default function UserManager() {
                                                 onClick={() =>
                                                     handleDelete(user._id)
                                                 }
-                                                className='bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md transition'
+                                                className='bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-1 rounded-md transition text-xs sm:text-sm'
                                             >
                                                 Delete
                                             </button>
@@ -186,13 +190,6 @@ export default function UserManager() {
                     </table>
                 </div>
             </div>
-
-            {/* Custom style using Tailwind apply */}
-            <style jsx>{`
-                .input-style {
-                    @apply border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-600;
-                }
-            `}</style>
         </div>
     )
 }

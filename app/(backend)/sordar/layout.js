@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
         
         setRole(userRole)
         setLoading(false)
-    }, [])
+    }, [router])
 
 
     if (loading) return <div className='p-6'>Checking auth...</div>

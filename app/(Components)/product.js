@@ -48,6 +48,7 @@ const Product = ({ name, images, slug }) => {
                             src={images[0].url}
                             alt={images[0].name || name || 'Product Image'}
                             fill
+                            priority
                             className='object-cover w-full h-full'
                         />
                     ) : (

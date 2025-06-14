@@ -18,6 +18,7 @@ const ProductClient = ({ product }) => {
                         <Image
                             src={mainImage.url}
                             alt={mainImage.name || product.name}
+                            priority
                             width={600}
                             height={600}
                             className='object-cover rounded-xl w-full h-[400px] sm:h-[500px] lg:h-[450px]'
@@ -44,6 +45,7 @@ const ProductClient = ({ product }) => {
                                     <Image
                                         src={img.url}
                                         alt={img.name || product.name}
+                                        priority
                                         width={70}
                                         height={70}
                                         className='object-cover w-full h-full'

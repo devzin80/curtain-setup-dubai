@@ -6,6 +6,7 @@ import WhyUs from './(Components)/whyUs'
 import BookAFreeVisit from './book-a-free-visit/page'
 import { get } from 'mongoose'
 import { getSeoData } from '@/lib/seodata'
+import RecentSetups from './(Components)/recentsetups'
 
 
 export async function generateMetadata() {
@@ -18,6 +19,7 @@ export default function Home() {
             <WhyUs />
             <BestSellingProducts title='Elegance in Demand' />
             <AdditionalProducts />
+            <RecentSetups/>
             <BookAFreeVisit />
         </div>
     )
