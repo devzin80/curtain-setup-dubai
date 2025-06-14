@@ -137,6 +137,7 @@ const MobileNav = () => {
                                             Book A Free Visit
                                         </div>
                                     </Link>
+                                    <Link href={'/login'}>Login</Link>
                                 </nav>
                             )}
                         </motion.div>

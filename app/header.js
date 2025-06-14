@@ -44,6 +44,7 @@ const Header = async () => {
                             Book A Free Visit
                         </div>
                     </Link>
+                    <Link href={'/login'}>Login</Link>
                 </nav>
                 <MobileNav />
             </div>
