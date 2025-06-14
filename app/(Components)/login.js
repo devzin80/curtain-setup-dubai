@@ -1,7 +1,9 @@
 'use client'
 
+import { decodeToken } from '@/lib/auth'
+
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -17,11 +19,16 @@ export default function LoginPage() {
       ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}
     `
         document.body.appendChild(toast)
-        setTimeout(() => toast.remove(), 3000)
+        setTimeout(() => {
+            toast.classList.add('opacity-0')
+            setTimeout(() => toast.remove(), 500)
+        }, 3000)
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (loading) return // Prevent double submit
+
         setLoading(true)
 
         try {
@@ -32,25 +39,37 @@ export default function LoginPage() {
             })
 
             const data = await res.json()
-            
 
-            // if (!res.ok) {
-            //     throw new Error(data.message || 'Invalid email or password')
-            // }
+            if (res.ok) {
+                localStorage.setItem('token', data.token)
+                showToast('Login successful!', 'success')
 
-            showToast('Login successful!', 'success')
-            router.refresh()
-            router.push('/sordar') // Redirect to dashboard or home page after login
-            // Optional: redirect user
+                // Wait for push before continuing
+                 router.push('/sordar/')
+                // router.refresh()
+            } else {
+                // Show error message from API if available
+                showToast(data.message || 'Login failed', 'error')
+            }
         } catch (err) {
-            showToast(err.message || 'Login failed', 'error') // <- Toast for invalid login
+            showToast(err.message || 'Login failed', 'error')
         } finally {
             setLoading(false)
+            // Clear inputs only on success, so move this inside the success branch if needed
+            // Or you can decide to clear always — here clearing only if login succeeded:
+            // But for demo, let's clear always:
             setEmail('')
             setPassword('')
+            // router.refresh() // Refresh the page to reflect login state
         }
     }
 
+    useEffect(() => {
+        const user = decodeToken()
+        if (user) {
+            router.push('/sordar/')
+        }
+    }, [router])
     return (
         <div className='flex items-center justify-center min-h-screen bg-orange-50 p-4'>
             <div className='w-full max-w-md bg-white p-8 rounded-2xl shadow-xl'>
@@ -72,6 +91,7 @@ export default function LoginPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className='w-full mt-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black'
+                            disabled={loading}
                         />
                     </div>
 
@@ -85,13 +105,14 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className='w-full mt-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black'
+                            disabled={loading}
                         />
                     </div>
 
                     <button
                         type='submit'
                         disabled={loading}
-                        className='w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md transition'
+                        className='w-full bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-semibold py-2 px-4 rounded-md transition'
                     >
                         {loading ? 'Logging in...' : 'Login'}
                     </button>

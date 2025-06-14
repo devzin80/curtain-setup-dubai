@@ -1,28 +1,40 @@
-
+'use client'
 import AdminSidebar from '../../(Components)/adminSidebar'
-import { cookies } from 'next/headers'
-import LoginPage from '@/app/(Components)/login'
-import { decodeToken } from '@/lib/auth'
-export default function RootLayout({ children }) {
-    const cookieStore = cookies()
-    const token = cookieStore.get('token') 
 
-    const isLoggedIn = !!token
-    const role = decodeToken(token)
+
+import { decodeToken } from '@/lib/auth'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+export default function RootLayout({ children }) {
+    const [role, setRole] = useState(null)
+    const [loading, setLoading] = useState(true)
+    // const pathName = usePathname()
+    const router = useRouter()
+
+    useEffect(() => {
+        const userRole = decodeToken()
+        // console.log('userRole is', userRole, 'and pathName is', pathName);
+        if (!userRole) {
+            // If no role, redirect to login
+            router.push('/login')
+            return
+        }
+        
+        setRole(userRole)
+        setLoading(false)
+    }, [])
+
+
+    if (loading) return <div className='p-6'>Checking auth...</div>
+
     return (
         <>
-            {isLoggedIn ? (
-                <div className='flex bg-gray-50 text-gray-900 min-h-screen'>
-                    <div className='hidden md:block'>
-                        <AdminSidebar  role = {role} />
-                    </div>
-                    <div className='flex-1'>{children}</div>
+            <div className='flex bg-gray-50 text-gray-900 min-h-screen'>
+                <div className='hidden md:block'>
+                    <AdminSidebar role={role} />
                 </div>
-            ) : (
-                <LoginPage />
-            )}
+                <div className='flex-1'>{children}</div>
+            </div>
         </>
-        
-        
     )
 }

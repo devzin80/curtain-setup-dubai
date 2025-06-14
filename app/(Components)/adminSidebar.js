@@ -206,7 +206,7 @@ const SidebarItem = ({ item, level = 0, onLinkClick }) => {
                         {item.name}
                     </Link>
                 ) : (
-                    <span className='block w-full py-2 px-3 rounded hover:bg-blue-100 text-gray-800 text-sm'>
+                    <span className='block w-full py-2 px-3 rounded hover:bg-blue-100 text-gray-800 text-sm' id='cms' >
                         {item.name}
                     </span>
                 )}

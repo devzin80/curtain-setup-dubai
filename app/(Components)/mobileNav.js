@@ -7,31 +7,28 @@ import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { MdHome } from 'react-icons/md'
+import { decodeToken } from '@/lib/auth'
+import { set } from 'mongoose'
 
 const MobileNav = () => {
     const [role, setRole] = useState(null)
+    const [refresh, setRefresh] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
-    const [mounted, setMounted] = useState(false)
+ 
     const pathname = usePathname()
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
 
     useEffect(() => {
-        fetch('/api/me')
-            .then((res) => res.json())
-            .then((data) => {
-                setRole(data.role)
-            })
-            .catch((err) => {
-                console.error('Failed to fetch user role:', err)
-            })
-    }, [])
+        const role = decodeToken()
+        
+        // const role = decodeToken(token?.value) || ''
+        setRole(role)
+        setRefresh((prev) => !prev)
+    }, [pathname])
 
     const toggleMenu = () => setIsOpen((prev) => !prev)
     const closeMenu = () => setIsOpen(false)
-
+    if(!refresh) return <></>
     return (
         <div className='md:hidden relative z-50'>
             {!isOpen && (
@@ -98,11 +95,7 @@ const MobileNav = () => {
                                 <X size={28} />
                             </button>
 
-                            {!mounted || role === null ? (
-                                <div className='text-center mt-4 text-gray-600'>
-                                    Loading menu...
-                                </div>
-                            ) : pathname.startsWith('/sordar') ? (
+                            { pathname.startsWith('/sordar') && role ? (
                                 <AdminSidebar
                                     onLinkClick={closeMenu}
                                     role={role}
