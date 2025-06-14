@@ -160,7 +160,7 @@ const AdditionalProducts = () => {
     return (
         <div className='max-w-4xl mx-auto px-4 py-6'>
             <h1 className='text-2xl font-bold mb-6 text-center'>
-                Best Selling Products
+                Additional Products
             </h1>
 
             {/* FORM */}

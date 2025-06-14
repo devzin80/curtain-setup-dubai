@@ -15,13 +15,12 @@ const AdditionalProducts = async () => {
                 <div className='w-[80vw] flex flex-wrap justify-center gap-6 sm:gap-12'>
                     {Array.isArray(products) && products.length > 0 ? (
                         products.map((product, index) => (
-                            <div key={product._id || product.slug || index}>
-                                <Product
-                                    name={product.name || ''}
-                                    images={product.images || []}
-                                    slug={product.slug || ''}
-                                />
-                            </div>
+                            <Product
+                                key={product._id || product.slug || index}
+                                name={product.name || ''}
+                                images={product.images || []}
+                                slug={product.slug || ''}
+                            />
                         ))
                     ) : (
                         <div>No additional products found.</div>
