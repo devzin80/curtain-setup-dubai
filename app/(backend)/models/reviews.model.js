@@ -2,10 +2,6 @@ import mongoose from 'mongoose'
 
 const reviewSchema = new mongoose.Schema(
     {
-        visible: {
-            type: Boolean,
-            default: false,
-        },
         name: {
             type: String,
             required: true,
@@ -18,6 +14,18 @@ const reviewSchema = new mongoose.Schema(
         rating: {
             type: Number,
             required: true,
+            min: 1,
+            max: 5,
+        },
+        image: {
+            name: {
+                type: String,
+                required: true,
+            },
+            url: {
+                type: String,
+                required: true,
+            },
         },
     },
     { timestamps: true },

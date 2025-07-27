@@ -9,26 +9,31 @@ import Link from 'next/link'
 import { MdHome } from 'react-icons/md'
 import { decodeToken } from '@/lib/auth'
 
-
 const MobileNav = () => {
     const [role, setRole] = useState(null)
-    
     const [isOpen, setIsOpen] = useState(false)
- 
     const pathname = usePathname()
-
 
     useEffect(() => {
         const role = decodeToken()
-        
-        // const role = decodeToken(token?.value) || ''
         setRole(role)
-        
     }, [pathname])
+
+    // Prevent background scroll when menu is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+        return () => {
+            document.body.style.overflow = ''
+        }
+    }, [isOpen])
 
     const toggleMenu = () => setIsOpen((prev) => !prev)
     const closeMenu = () => setIsOpen(false)
-    
+
     return (
         <div className='md:hidden relative z-50'>
             {!isOpen && (
@@ -58,7 +63,7 @@ const MobileNav = () => {
                             className='fixed inset-0 bg-black z-40'
                         />
 
-                        {/* Sliding menu */}
+                        {/* Sliding Menu */}
                         <motion.div
                             key='menu'
                             initial='hidden'
@@ -86,7 +91,7 @@ const MobileNav = () => {
                                     },
                                 },
                             }}
-                            className='fixed top-0 right-0 w-4/5 max-w-xs h-full bg-white shadow-xl p-6 flex flex-col z-50'
+                            className='fixed top-0 right-0 w-4/5 max-w-xs h-full bg-white shadow-xl p-6 flex flex-col z-50 overflow-y-auto scrollbar-thin'
                         >
                             <button
                                 onClick={closeMenu}
@@ -95,7 +100,7 @@ const MobileNav = () => {
                                 <X size={28} />
                             </button>
 
-                            { pathname.startsWith('/sordar') && role ? (
+                            {pathname.startsWith('/sordar') && role ? (
                                 <AdminSidebar
                                     onLinkClick={closeMenu}
                                     role={role}
@@ -137,7 +142,13 @@ const MobileNav = () => {
                                             Book A Free Visit
                                         </div>
                                     </Link>
-                                    <Link href={'/login'}>Login</Link>
+                                    <Link
+                                        href='/login'
+                                        onClick={closeMenu}
+                                        className='hover:text-orange-600'
+                                    >
+                                        Login
+                                    </Link>
                                 </nav>
                             )}
                         </motion.div>

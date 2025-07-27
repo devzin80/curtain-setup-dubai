@@ -330,7 +330,7 @@ const BestSellingProducts = () => {
                                 </div>
                             </div>
                             <p className='text-sm text-gray-600'>
-                                {product.category}
+                                {product.description}
                             </p>
                             <div className='flex gap-2 flex-wrap'>
                                 {product.images?.map((img) => (

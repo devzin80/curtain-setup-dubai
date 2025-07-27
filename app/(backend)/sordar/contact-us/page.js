@@ -56,7 +56,7 @@ const ContactUs = () => {
     }
 
     return (
-        <div className='w-full max-w-4xl m-10 h-[50vh]'>
+        <div className='w-full max-w-4xl mx-auto my-10 px-4 sm:px-6 lg:px-8 min-h-[300px] md:min-h-[50vh] bg-white rounded-xl shadow-md'>
             <form onSubmit={handleSubmit}>
                 <label
                     htmlFor='address'

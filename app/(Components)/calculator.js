@@ -151,7 +151,7 @@ export default function Calculator() {
 
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8'>
                 <div>
-                    <label className='block mb-2 font-semibold text-orange-800'>
+                    <label className='block mb-2 font-semibold text-orange-600'>
                         Width (m)
                     </label>
                     <input
@@ -164,7 +164,7 @@ export default function Calculator() {
                     />
                 </div>
                 <div>
-                    <label className='block mb-2 font-semibold text-orange-800'>
+                    <label className='block mb-2 font-semibold text-orange-600'>
                         Height (m)
                     </label>
                     <input
